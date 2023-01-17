@@ -2,31 +2,52 @@
 // Development = Node.js server + Reasct server
 // Production = Node.js server + Static react files
 
-const express = require('express')
-const cors = require('cors')
-const mongoose = require('mongoose')
+const express = require("express");
+const { connections } = require("mongoose");
+const mongoose = require("mongoose");
 
-const app = express()
+//require("dotenv").config();
 
-app.use(cors())
-app.use(express.json())
+const cors = require("cors");
 
-mongoose.connect('mongodb://localhost:2701/bearMax')
+const https = require("https");
+const fs = require("fs");
 
-app.post('/api/register', async (req,res) => {
-    console.log(req.body)
+const app = express();
+const routes = require("./API/route");
 
-    try {
-        const user = await User.create({
-            name: 
-        })
-    } catch (err) {
+var bodyParser = require("body-parser");
+const port = process.env.PORT || 6969;
 
-    }
+app.use(express.json());
+app.use("/api", routes);
+app.use(cors());
+app.use(bodyParser.json({ extended: false }));
 
-    res.json({status: 'ok' })
-})
+app.listen (port, () => {
+    console.log("server started at port: " + port);
+});
 
-app.listen(1337, () => {
-    console.log('Server Started on 1337')
-})
+mongoose.connect(process.env.DATABASE_URI);
+const database = mongoose.connection;
+
+database.on("error", (error) => {
+    console.log(error);
+});
+
+database.once("connected", () => {
+    console.log("Database Connected!");
+});
+
+app.use((req, res, next) => {
+	res.setHeader("Access-Control-Allow-Origin", "*");
+	res.setHeader(
+		"Access-Control-Allow-Headers",
+		"Origin, X-Requested-With, Content-Type, Accept, Authorization",
+	);
+	res.setHeader(
+		"Access-Control-Allow-Methods",
+		"GET, POST, PATCH, DELETE, OPTIONS",
+	);
+	next();
+});
