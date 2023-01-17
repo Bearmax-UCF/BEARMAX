@@ -1,0 +1,21 @@
+.landingLogo {
+    max-width: 25%;
+    justify-content: center;
+    
+    text-align: center;
+}
+
+.smLandLogo {
+    max-width: 10%;
+    margin-left: 3rem;
+}
+
+.about {
+    display: flex;
+    justify-content: space-between;
+}
+
+.head {
+    text-align: center;
+    margin-right: 45%;
+}

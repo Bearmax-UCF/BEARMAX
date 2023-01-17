@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import NavBar from "./../../Components/LandingNav/LandingNav"
 
+import Logo from "./../../Components/Images/face.png";
+
 
 export const AboutUs = (props) => {
 
@@ -10,8 +12,9 @@ export const AboutUs = (props) => {
             <NavBar />
             
             <div className="about">
-                <h1>About!</h1>
-
+                <img src={Logo} className="smLandLogo" alt="Logo: bear max face" />
+                
+                <h1 className="head">About!</h1>
             </div>
         </div>
     )
