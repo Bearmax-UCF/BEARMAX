@@ -23,3 +23,15 @@
 .aboutBear {
     max-width: 15%;
 }
+
+.useBear {
+    max-width: 30%;
+    float: right;
+
+    margin-right: 5%;
+}
+
+.textUse {
+    float: left;
+    margin-left: 20%;
+}
