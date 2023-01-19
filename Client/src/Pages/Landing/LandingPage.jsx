@@ -12,8 +12,6 @@ export const LandingPage = (props) => {
             <NavBar />
             
             <div className="landing">
-                <h1>Welcome Friends!</h1>
-
                 <img src={Logo} className="landingLogo" alt="Logo: bear max face" />
 
             </div>

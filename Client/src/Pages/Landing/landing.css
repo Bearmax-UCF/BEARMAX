@@ -10,7 +10,7 @@
     margin-left: 3rem;
 }
 
-.about {
+.title {
     display: flex;
     justify-content: space-between;
 }
@@ -18,4 +18,8 @@
 .head {
     text-align: center;
     margin-right: 45%;
+}
+
+.aboutBear {
+    max-width: 15%;
 }
