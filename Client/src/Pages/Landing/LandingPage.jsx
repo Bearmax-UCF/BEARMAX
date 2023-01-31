@@ -13,7 +13,7 @@ export const LandingPage = (props) => {
             
             <div className="landing">
                 <img src={Logo} className="landingLogo" alt="Logo: bear max face" />
-
+                
             </div>
         </div>
     )
