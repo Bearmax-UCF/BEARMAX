@@ -5,6 +5,8 @@ import session from "express-session";
 import passport from "passport";
 import MongoStore from "connect-mongo";
 import localStrategy from "./localStrategy";
+import jwtStrategy from "./jwtStrategy";
+import constants from "../../utils/constants";
 
 
 const setupAuthSvc = (app: Application, dbClient: Promise<MongoClient>) => {
@@ -14,13 +16,13 @@ const setupAuthSvc = (app: Application, dbClient: Promise<MongoClient>) => {
   app.use(
     /* @ts-ignore */
     session({
-      secret: "devsecret",
+      secret: constants.secret_key,
       resave: false,
       saveUninitialized: false,
       /* @ts-ignore */
       store: MongoStore.create({
         clientPromise: dbClient,
-        dbName: "bearmax",
+        dbName: constants.mongo_db,
         collectionName: "sessions"
       })
     })
@@ -46,6 +48,7 @@ const setupAuthSvc = (app: Application, dbClient: Promise<MongoClient>) => {
   });
 
   passport.use(localStrategy);
+  passport.use(jwtStrategy);
 
 };
 

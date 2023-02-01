@@ -11,14 +11,17 @@ import setupAuthSvc from "./services/auth";
 
 import registerHandlers from "./eventHandlers";
 import routes from "./routes";
+import constants from "./utils/constants";
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
 
+console.log(constants.mongo_uri);
+
 // Setup MongoDB Connection
 const dbClient = mongoose
-  .connect(process.env.MONGO_URI || "mongodb://user:user@127.0.0.1:27017/bearmax")
+  .connect(constants.mongo_uri)
   .then(m => {
     console.log("CONNECTED TO MONGODB");
     return m.connection.getClient();
@@ -34,8 +37,4 @@ app.use("/", routes);
 // Setup socketio
 registerHandlers(io);
 
-//const isProduction = process.env.NODE_ENV === 'production';
-
-
-const port = process.env.PORT || 8080;
-server.listen(port, () => console.log(`server started at port: ${port}`));
+server.listen(constants.port, () => console.log(`server started at port: ${constants.port}`));
