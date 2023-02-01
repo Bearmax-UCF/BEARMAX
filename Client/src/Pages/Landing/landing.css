@@ -1,5 +1,5 @@
 .landingLogo {
-    max-width: 25%;
+    max-width: 20%;
     justify-content: center;
     
     text-align: center;
@@ -34,4 +34,26 @@
 .textUse {
     float: left;
     margin-left: 20%;
+}
+
+.landingButton {
+    display: block;
+    margin: auto;
+    padding-top: 10px;
+
+    background-color: #2E3138;
+    border: none;
+    color: #56B19C;
+    padding: 22px 40px;
+    text-align: center;
+
+    font-size: larger;
+
+    border-radius: 12px;
+
+    width: 25%;
+}
+
+.landingButton:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
