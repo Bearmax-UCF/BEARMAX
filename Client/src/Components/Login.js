@@ -27,19 +27,20 @@ function Login ()
 
     return (
         <div>
-            <img src={Logo} className="landingLogo" alt="Logo: bear max face" />
+            <img src={Logo} className="loginLogo" alt="Logo: bear max face" />
 
             <form onSubmit={doLogin}>
-                <input type="text" id="loginName" placeholder="Username" ref={(c) => (loginName = c)}/> {" "}
+                <input type="text" className="loginText" id="loginName" placeholder="Username" ref={(c) => (loginName = c)}/> {" "}
                 <br />
 
-                <input type="password" id="loginPassword" placeholder="Password" ref={(c) => (loginPassword = c)}/> {" "}
+                <input type="password" className="loginText" id="loginPassword" placeholder="Password" ref={(c) => (loginPassword = c)}/> {" "}
                 <br />
 
-                <button type="submit" className="login" onClick={doLogin}>Login</button>
+                <button type="submit" className="loginButton" onClick={doLogin}>Login</button>
             </form>
 
-            
+            <br />
+            <a className="logToReg" onClick={() => navigate("/register")}><u>Don't have an account? Register now!</u></a>            
         </div>
     );
 }

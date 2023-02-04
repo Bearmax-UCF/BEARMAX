@@ -1,7 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import Logo from "./Images/face.png";
 
 function Register ()
 {
+    const navigate = useNavigate();
+
     const [firstName, setFName] = useState('');
     const [lastName, setLName] = useState('');
     const [email, setEmail] = useState('');
@@ -31,22 +36,22 @@ function Register ()
 
     return (
         <div className="Register">
-            <h1>New Friend!</h1>
+            
+            <img src={Logo} className="regLogo" alt="Logo: bear max face" />
+
             <form onSubmit={registerUser}>
-                <label>First Name</label> <br />
-                <input value={firstName} onChange={(e) => setFName(e.target.value)} type="text" placeholer="First Name" /> <br />
-
-                <label>Last Name</label> <br />
-                <input value={lastName} onChange={(e) => setLName(e.target.value)} type="text" placeholer="Last Name" /> <br />
-
-                <label>Email</label> <br />
-                <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholer="email@example.com" /> <br />
-
-                <label>Password</label> <br />
-                <input  value={pass} onChange={(e) => setPass(e.target.value)}type="password" placeholer="********" /> <br />
                 
-                <input type="submit" value="Register" />
+                <input type="text" className="regText" id="regName" placeholder="First Name" value={firstName} onChange={(e) => setFName(e.target.value)}/> <br />
+                
+                <input type="text" placeholder="Last Name" className="regText" value={lastName} onChange={(e) => setLName(e.target.value)}  /> <br />
+
+                <input value={email} className="regText" onChange={(e) => setEmail(e.target.value)} type="email" placeholder="email@bearmax.com" /> <br />
+
+                <input  value={pass} className="regText" onChange={(e) => setPass(e.target.value)}type="password" placeholder="Password" /> <br />
+                
+                <input className="regButton" type="submit" value="Register" /> <br />
             </form>
+            <a className="regToLog" onClick={() => navigate("/login")}><u>Already have an account? Login!</u></a> 
         </div>
     );
 }
