@@ -4,6 +4,7 @@ import type { Server } from "socket.io";
  */
 export default (io: Server) => {
   io.on("connection", socket => {
+    console.log("connected");
     socket.on("yo", () => console.log("yo"));
   });
 };
