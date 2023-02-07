@@ -2,8 +2,17 @@
   "name": "bearmax-stack",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "dev": "npm run dev:client & npm run dev:server",
+    "dev:server": "npm run dev --workspace=Server",
+    "dev:client": "cross-env BROWSER=none npm start --workspace=Client",
+    "start": "npm run build --workspace=Client && cross-env NODE_ENV=production npm start --workspace=Server"
+  },
   "workspaces": [
-    "Client/*",
-    "Server/*"
-  ]
+    "Client",
+    "Server"
+  ],
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
 }

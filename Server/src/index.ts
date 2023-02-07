@@ -17,8 +17,6 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
 
-console.log(constants.mongo_uri);
-
 // Setup MongoDB Connection
 const dbClient = mongoose
   .connect(constants.mongo_uri)
@@ -30,7 +28,6 @@ const dbClient = mongoose
 // Setup Auth (Passport & Sessions)
 // @ts-ignore
 setupAuthSvc(app, dbClient);
-
 // Setup Routes
 app.use("/", routes);
 
