@@ -18,20 +18,10 @@ const options: ServerOptions = {
   rejectUnauthorized: false
 };
 
-// /socket.io
-//const server = constants.isProduction ? createSecureServer(options, app) : createServer(app);
-const server = createSecureServer(options, app);
-
+const server = constants.isProduction ? createSecureServer(options, app) : createServer(app);
 const io = new Server(server);
 
-io.engine.on("connection", (rawSocket) => {
-  rawSocket.peerCertificate = rawSocket.request.client.getPeerCertificate();
-  console.log(rawSocket.request.client.authorized);
-  console.log(rawSocket.peerCertificate);
-});
-
 import setupAuthSvc from "./services/auth";
-
 import registerHandlers from "./eventHandlers";
 import routes from "./routes";
 
@@ -56,4 +46,4 @@ app.use("/", routes);
 // Setup socketio
 registerHandlers(io);
 
-server.listen(8443, () => console.log(`server started at port: ${constants.port}`));
+server.listen(constants.port, () => console.log(`server started at port: ${constants.port}`));
