@@ -6,7 +6,7 @@ export default function LandingNav() {
 
     return (
         <nav className="nav">
-            <Link to="/" className="site-title">
+            <Link to="/dashboard" className="site-title">
                 B.E.A.R.M.A.X.
             </Link>
 
