@@ -23,6 +23,16 @@ export default (io: Server) => {
 
   io.on("connection", socket => {
     console.log("connected");
+
     socket.on("yo", () => console.log("yo"));
+
+    socket.on("message", (...d) => console.log(d));
+
+    socket.on("ping", () => socket.emit("pong"));
+
+    socket.on("disconnecting", reason => {
+      console.log(`disconnecting: ${reason}`);
+    });
   });
+
 };
