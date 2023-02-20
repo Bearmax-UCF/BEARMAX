@@ -4,8 +4,8 @@ const EmotionRecognition = new mongoose.Schema(
     {
         Correct: {type: Array},
         Wrong: {type: Array},
-        TotalPlays: {type: Number},
-        NumCorrect: {type: Number}
+        NumCorrect: {type: Number},
+        GameFin: {type: Number}
     },
     { 
         collection: 'EmotionRecognition' 
