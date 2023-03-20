@@ -29,15 +29,11 @@ export const Comments = (props) => {
 
             { showhide==='2' && (
                 <div className="notesDisplay">
-                    <label className="mb-2">User Address 2</label>
-                    <textarea name="address2" className="form-control"></textarea>
                 </div>
             )}
 
             { showhide==='3' && (
                 <div className="notesDisplay">
-                    <label className="mb-2">User Address 3</label>
-                    <textarea name="address3" className="form-control"></textarea>
                 </div>
             )}
         
