@@ -4,6 +4,7 @@ import { BrowserRouter as BrowserRouter, Route, Routes } from "react-router-dom"
 import './App.css';
 import './Components/LandingNav/Nav.css';
 import './Pages/Landing/landing.css';
+import './Pages/Account/Account.css'
 import './Components/Component.css';
 import './Components/ReportElements/report.css';
 

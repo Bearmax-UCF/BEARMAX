@@ -1,0 +1,16 @@
+.calImg {
+    display: flex;
+    width: 20%;
+    height:30%;
+
+    border-style: solid;
+    border-radius: 1%;
+    border-color: #333;
+
+    margin-left: 5%;
+    margin-top: 2%;
+}
+
+.calibrateText {
+    display: inline-block;
+}
