@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const SensorCalibration = new mongoose.Schema(
     {
@@ -20,4 +20,4 @@ const SensorCalibration = new mongoose.Schema(
 
 const model = mongoose.model('SensorCalibration', SensorCalibration)
 
-module.exports = model
+export default model

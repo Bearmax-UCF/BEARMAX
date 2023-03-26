@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const ExtraChildInfo = new mongoose.Schema(
     {
@@ -13,4 +13,4 @@ const ExtraChildInfo = new mongoose.Schema(
 
 const model = mongoose.model('ExtraChildInfo', ExtraChildInfo)
 
-module.exports = model
+export default model
