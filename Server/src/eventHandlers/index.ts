@@ -33,6 +33,8 @@ export default (io: Server) => {
         - Args: action ("start" or "stop")
     - 'recalibrate': Mobile app sending request for camera and sensors to recalibrate
         - Args: none
+      - 'emotionGameStats': ROS is sending back stats about what they got right/wrong in JSON format, save to DB
+        - Args: string
 
     Client Listeneing (ROS or Mobile)
     - 'speak': Server sends message to mobile to caption message
@@ -50,28 +52,38 @@ export default (io: Server) => {
       io.emit('speak', message)
     })
 
-    socket.on('emotionGame', (action: EmotionGameAction) => {
-      if (action === "start") {
-        io.emit('emotionGame', action)
-      } else {
-        const UserID = "TODO"; // TODO: Get the UserID from the mobile client socket
-        io.emit('emotionGame', action, UserID, (stats: EmotionGameStats) => {
-          const finishedGame = new EmotionRecognition({
-            ...stats,
-            UserID,
-            GameFin: new Date()
-          });
-
-          finishedGame.save((err) => console.error(err));
-        })
-      }
-    })
+    socket.on('emotionGame', (action: EmotionGameAction) =>
+      io.emit('emotionGame', action)
+    )
 
     socket.on('recalibrate', () => io.emit('recalibrate'))
 
-    socket.on("disconnecting", reason => {
-      console.log(`disconnecting ${socket.id}: ${reason}`);
-    });
-  });
+    // Emotion game was successfully stopped and is passing back data
+    socket.on('emotionGameStats', (statsJSON: string) => {
+      const statsRaw = JSON.parse(statsJSON);
 
+      if (!statsRaw) {
+        console.log("Failed to save Emotion Game stats - UserID in return was undefined or empty")
+        return;
+      }
+
+      const finishedGame = new EmotionRecognition({
+        Correct: statsRaw.Correct ?? [0, 0, 0, 0],
+        Wrong: statsRaw.Wrong ?? [0, 0, 0, 0],
+        NumPlays: statsRaw.NumPlays ?? 0,
+        UserID: statsRaw.UserID ?? "",
+        GameFin: new Date()
+      });
+
+      finishedGame.save((err) => {
+        if (err) console.error(err);
+        else console.log("Successfully saved event!");
+      })
+
+
+      socket.on("disconnecting", reason => {
+        console.log(`disconnecting ${socket.id}: ${reason}`);
+      });
+    });
+  })
 };

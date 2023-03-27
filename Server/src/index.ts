@@ -45,5 +45,6 @@ app.use("/", routes);
 
 // Setup socketio
 registerHandlers(io);
+console.log("Socket server initialized")
 
 server.listen(constants.port, () => console.log(`server started at port: ${constants.port}`));
