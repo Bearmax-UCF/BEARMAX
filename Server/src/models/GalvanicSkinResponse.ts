@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const GalvanicSkinResponse = new mongoose.Schema(
     {
@@ -14,4 +14,4 @@ const GalvanicSkinResponse = new mongoose.Schema(
 
 const model = mongoose.model('GalvanicSkinResponse', GalvanicSkinResponse)
 
-module.exports = model
+export default model

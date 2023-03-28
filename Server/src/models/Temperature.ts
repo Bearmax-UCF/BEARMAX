@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const Temperature = new mongoose.Schema(
     {
@@ -14,4 +14,4 @@ const Temperature = new mongoose.Schema(
 
 const model = mongoose.model('Temperature', Temperature)
 
-module.exports = model
+export default model

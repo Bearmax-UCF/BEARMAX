@@ -3,7 +3,7 @@ import { ExtractJwt } from "passport-jwt";
 import requireLocalAuth from "../../middleware/requireLocalAuth";
 import AuthToken from "../../models/AuthToken";
 import User from "../../models/User";
-import Notes from "../../models/PhysicianNotes";
+import PhysicianNotes from "../../models/PhysicianNotes";
 import jwt from "jsonwebtoken";
 const router = Router();
 
@@ -82,7 +82,7 @@ router.post("/newNote", async (req, res) => {
 router.post("/deleteNote", async (req, res) => {
   const id = req.body.idNote;
 
-  PhysicianNotes.findByIdAndDelete(id, (err) => {
+  PhysicianNotes.findByIdAndDelete(id, (err: any) => {
     if(err){
       console.log(err);
     } else{

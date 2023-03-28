@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const RespitoryRate = new mongoose.Schema(
     {
@@ -14,4 +14,4 @@ const RespitoryRate = new mongoose.Schema(
 
 const model = mongoose.model('RespitoryRate', RespitoryRate)
 
-module.exports = model
+export default model

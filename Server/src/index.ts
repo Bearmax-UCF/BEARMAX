@@ -3,15 +3,27 @@ import mongoose from "mongoose";
 const app = express();
 import { createServer } from "http";
 import cors from "cors";
-//const https = require("https");
-const server = createServer(app);
+import fs from "fs";
+import { createServer as createSecureServer, ServerOptions } from "https";
 import { Server } from "socket.io";
-const io = new Server(server);
-import setupAuthSvc from "./services/auth";
+import constants from "./utils/constants";
 
+const options: ServerOptions = {
+  key: fs.readFileSync(`${__dirname}/../certs/server-key.pem`),
+  cert: fs.readFileSync(`${__dirname}/../certs/server-crt.pem`),
+  ca: [
+    fs.readFileSync(`${__dirname}/../certs/ca-crt.pem`)
+  ],
+  requestCert: true,
+  rejectUnauthorized: false
+};
+
+const server = constants.isProduction ? createSecureServer(options, app) : createServer(app);
+const io = new Server(server);
+
+import setupAuthSvc from "./services/auth";
 import registerHandlers from "./eventHandlers";
 import routes from "./routes";
-import constants from "./utils/constants";
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }))
@@ -33,5 +45,6 @@ app.use("/", routes);
 
 // Setup socketio
 registerHandlers(io);
+console.log("Socket server initialized")
 
 server.listen(constants.port, () => console.log(`server started at port: ${constants.port}`));

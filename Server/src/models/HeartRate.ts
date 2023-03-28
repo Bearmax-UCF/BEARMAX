@@ -14,4 +14,4 @@ const HeartRate = new mongoose.Schema(
 
 const model = mongoose.model('HeartRate', HeartRate)
 
-module.exports = model
+export default model

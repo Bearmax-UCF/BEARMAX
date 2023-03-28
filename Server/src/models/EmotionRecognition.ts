@@ -1,17 +1,25 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
+
+/*
+Correct/Wrong Index Correlations:
+0: Happy
+1: Sad
+2: Angry
+3: Neutral
+*/
 
 const EmotionRecognition = new mongoose.Schema(
     {
-        Correct: {type: Array},
-        Wrong: {type: Array},
-        NumCorrect: {type: Number},
-        GameFin: {type: Number}
+        Correct: { type: Array },
+        Wrong: { type: Array },
+        GameFin: Date,
+        UserID: String
     },
-    { 
-        collection: 'EmotionRecognition' 
+    {
+        collection: 'EmotionRecognition'
     }
 );
 
 const model = mongoose.model('EmotionRecognition', EmotionRecognition)
 
-module.exports = model
+export default model
