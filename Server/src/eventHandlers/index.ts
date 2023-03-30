@@ -48,18 +48,25 @@ export default (io: Server) => {
   io.on("connection", socket => {
     console.log("New connection " + socket.id);
 
+    // Forward to mobile
     socket.on("speak", (message: string) => {
+      console.log("Received speak event with message '" + message + "'")
       io.emit('speak', message)
     })
 
-    socket.on('emotionGame', (action: EmotionGameAction) =>
+    // Forward to ROS
+    socket.on('emotionGame', (action: EmotionGameAction) => {
+      console.log("Received emotionGame event with action '" + action + "'")
       io.emit('emotionGame', action)
-    )
+    })
 
+    // Forward to ROS
     socket.on('recalibrate', () => io.emit('recalibrate'))
 
     // Emotion game was successfully stopped and is passing back data
     socket.on('emotionGameStats', (statsJSON: string) => {
+      console.log("Received emotionGameStats event")
+      // TODO: Get the UserID from mobile and save as part of the document
       const statsRaw = JSON.parse(statsJSON);
 
       if (!statsRaw) {
