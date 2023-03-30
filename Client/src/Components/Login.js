@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-//import { buildPath } from './BuildPath';
+import { buildPath } from './BuildPath';
 
 import Logo from "./Images/face.png";
 
