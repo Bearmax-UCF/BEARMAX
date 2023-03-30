@@ -5,7 +5,7 @@ exports.buildPath = function buildPath(route) {
 		return "https://" + app_name + ".com/" + route;
 	} else {
         // Not sure which one  it should be
-		return "http://localhost:3000/" + route;
-        // return "http://localhost:8080/" + route;
+		//return "http://localhost:3000/" + route;
+        return "http://localhost:8080/" + route;
 	}
 };
