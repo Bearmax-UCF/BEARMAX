@@ -14,3 +14,23 @@
 .calibrateText {
     display: inline-block;
 }
+
+.settingBear {
+    max-width: 40%;
+    display: flex;
+    margin-left: 2%;
+    margin-top: 10%;
+}
+
+.settingsText {
+    float: right;
+
+    margin-right: 30%;
+    margin-top: 3%;
+}
+
+.setInfo {
+    margin: 2%;
+
+    margin-top: 100%;
+}
