@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+
+import Graph from "../../Components/HomeGraph/graph";
 import NavBar from "./../../Components/AccountNav/AccountNav";
 
 
@@ -8,6 +10,8 @@ export const Dashboard = (props) => {
         
         <div>
             <NavBar />
+
+            <Graph/>
         </div>
     )
 }
