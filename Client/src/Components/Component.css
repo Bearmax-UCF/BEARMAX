@@ -39,3 +39,8 @@
 .logToReg, .regToLog {
     color: #56B19C;
 }
+
+.graphDisplay {
+    display:flex;
+    margin-left: 5%;
+}

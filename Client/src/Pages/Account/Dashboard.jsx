@@ -11,7 +11,11 @@ export const Dashboard = (props) => {
         <div>
             <NavBar />
 
-            <Graph/>
+
+            <h3 className="graphDisplay">Galvanic Skin Response</h3>
+            <div className="graphDisplay">
+                <Graph/>
+            </div>
         </div>
     )
 }
