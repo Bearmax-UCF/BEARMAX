@@ -56,11 +56,21 @@ router.get("/logout", async (req, res, next) => {
 		const tokData = jwt.decode(token, { json: true });
 		if (tokData) {
 			const { jti } = tokData;
-			const t = await AuthToken.findOne({ jti });
-			t?.revoke();
+			try {
+				const t = await AuthToken.findOne({ jti });
+				t?.revoke();
+				res.status(200).send({ message: "Successfully logged out!" });
+			} catch (err) {
+				return res.status(400).send({
+					message:
+						"Logout failed: Couldn't find token in collection.",
+				});
+			}
 		}
 	}
-	res.send(false);
+	return res.status(400).send({
+		message: "Logout failed: Couldn't decode token from request.",
+	});
 });
 
 // Added API for notes... need to be checked.
