@@ -11,6 +11,7 @@ export default (io: Server) => {
   if (constants.isProduction) {
     io.engine.on("connection", (rawSocket) => {
       const isAuthorized = rawSocket.request.client.authorized;
+      console.log(`NEW CONNECTION: ${isAuthorized}`);
 
       if (!isAuthorized) {
         const err = new Error("not authorized");
@@ -50,13 +51,13 @@ export default (io: Server) => {
 
     // Forward to mobile
     socket.on("speak", (message: string) => {
-      console.log("Received speak event with message '" + message + "'")
+      console.log((new Date()) + " || Received speak event with message '" + message + "'")
       io.emit('speak', message)
     })
 
     // Forward to ROS
     socket.on('emotionGame', (action: EmotionGameAction) => {
-      console.log("Received emotionGame event with action '" + action + "'")
+      console.log((new Date()) + " || Received emotionGame event with action '" + action + "'")
       io.emit('emotionGame', action)
     })
 
@@ -65,7 +66,7 @@ export default (io: Server) => {
 
     // Emotion game was successfully stopped and is passing back data
     socket.on('emotionGameStats', (statsJSON: string) => {
-      console.log("Received emotionGameStats event")
+      console.log((new Date()) + " || Received emotionGameStats event")
       // TODO: Get the UserID from mobile and save as part of the document
       const statsRaw = JSON.parse(statsJSON);
 

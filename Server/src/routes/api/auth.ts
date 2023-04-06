@@ -59,7 +59,7 @@ router.get("/logout", async (req, res, next) => {
 			try {
 				const t = await AuthToken.findOne({ jti });
 				t?.revoke();
-				res.status(200).send({ message: "Successfully logged out!" });
+				return res.status(200).send({ message: "Successfully logged out!" });
 			} catch (err) {
 				return res.status(400).send({
 					message:

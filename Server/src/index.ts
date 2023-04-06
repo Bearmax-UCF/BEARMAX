@@ -18,7 +18,7 @@ const options: ServerOptions = {
   rejectUnauthorized: false
 };
 
-const server = constants.isProduction ? createSecureServer(options, app) : createServer(app);
+const server = false ? createSecureServer(options, app) : createServer(app);
 const io = new Server(server);
 
 import setupAuthSvc from "./services/auth";
@@ -28,6 +28,7 @@ import routes from "./routes";
 app.use(cors());
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
+
 
 // Setup MongoDB Connection
 const dbClient = mongoose
@@ -40,6 +41,7 @@ const dbClient = mongoose
 // Setup Auth (Passport & Sessions)
 // @ts-ignore
 setupAuthSvc(app, dbClient);
+
 // Setup Routes
 app.use("/", routes);
 
