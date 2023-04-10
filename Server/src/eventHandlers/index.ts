@@ -85,6 +85,8 @@ export default (io: Server) => {
 		socket.on("emotionGameStats", (statsJSON: string) => {
 			console.log(new Date() + " || Received emotionGameStats event");
 			const statsRaw = JSON.parse(statsJSON);
+			console.log(statsRaw);
+			console.log(typeof statsRaw.GameFin);
 
 			if (!statsRaw) {
 				console.log(
@@ -105,8 +107,8 @@ export default (io: Server) => {
 				Correct: statsRaw.Correct ?? [0, 0, 0, 0],
 				Wrong: statsRaw.Wrong ?? [0, 0, 0, 0],
 				NumPlays: statsRaw.NumPlays ?? 0,
+				GameFin: new Date(statsRaw.GameFin) ?? new Date(),
 				UserID: statsRaw.UserID,
-				GameFin: new Date(),
 			});
 
 			finishedGame.save((err) => {
