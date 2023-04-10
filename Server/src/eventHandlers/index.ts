@@ -1,30 +1,29 @@
 import type { Server } from "socket.io";
 import constants from "../utils/constants";
-import { EmotionGameAction, EmotionGameStats } from "../utils/types"
-import EmotionRecognition from "../models/EmotionRecognition"
+import { EmotionGameAction, EmotionGameStats } from "../utils/types";
+import EmotionRecognition from "../models/EmotionRecognition";
 
 /** Register socket.io event handlers
  */
 export default (io: Server) => {
+	// Ensure websocket clients have a valid client certificate
+	//   if (constants.isProduction) {
+	//     io.engine.on("connection", (rawSocket) => {
+	//       const isAuthorized = rawSocket.request.client.authorized;
+	//       console.log(`NEW CONNECTION: ${isAuthorized}`);
 
-  // Ensure websocket clients have a valid client certificate
-  if (constants.isProduction) {
-    io.engine.on("connection", (rawSocket) => {
-      const isAuthorized = rawSocket.request.client.authorized;
-      console.log(`NEW CONNECTION: ${isAuthorized}`);
+	//       if (!isAuthorized) {
+	//         const err = new Error("not authorized");
+	//         (err as Error & { data: { content: string; } }).data = {
+	//           content: "Not Authorized, invalid or missing client certificate."
+	//         };
+	//         rawSocket.emit("connect_error", err);
+	//         rawSocket.close();
+	//       }
+	//     });
+	//   }
 
-      if (!isAuthorized) {
-        const err = new Error("not authorized");
-        (err as Error & { data: { content: string; } }).data = {
-          content: "Not Authorized, invalid or missing client certificate."
-        };
-        rawSocket.emit("connect_error", err);
-        rawSocket.close();
-      }
-    });
-  }
-
-  /*
+	/*
   Events:
 
     Server listening:
@@ -37,7 +36,7 @@ export default (io: Server) => {
       - 'emotionGameStats': ROS is sending back stats about what they got right/wrong in JSON format, save to DB
         - Args: string
 
-    Client Listeneing (ROS or Mobile)
+    Client Listening (ROS or Mobile)
     - 'speak': Server sends message to mobile to caption message
         - Args: message (string)
     - 'emotionGame': ROS listening for start/stop updates to the emotion game
@@ -46,52 +45,78 @@ export default (io: Server) => {
         - Args: none
   */
 
-  io.on("connection", socket => {
-    console.log("New connection " + socket.id);
+	io.on("connection", (socket) => {
+		console.log("New connection " + socket.id);
 
-    // Forward to mobile
-    socket.on("speak", (message: string) => {
-      console.log((new Date()) + " || Received speak event with message '" + message + "'")
-      io.emit('speak', message)
-    })
+		// Forward to mobile
+		socket.on("speak", (message: string) => {
+			console.log(
+				new Date() +
+					" || Received speak event with message '" +
+					message +
+					"'"
+			);
+			io.emit("speak", message);
+		});
 
-    // Forward to ROS
-    socket.on('emotionGame', (action: EmotionGameAction) => {
-      console.log((new Date()) + " || Received emotionGame event with action '" + action + "'")
-      io.emit('emotionGame', action)
-    })
+		// Forward to ROS
+		socket.on("emotionGame", (action: EmotionGameAction) => {
+			const senderID = socket.handshake.query.userID;
+			if (!senderID) {
+				console.log(
+					"Error: Game started by a socket without a userID query parameter."
+				);
+				return;
+			}
 
-    // Forward to ROS
-    socket.on('recalibrate', () => io.emit('recalibrate'))
+			console.log(
+				new Date() +
+					" || Received emotionGame event with action '" +
+					action +
+					"'"
+			);
+			io.emit("emotionGame", action, senderID);
+		});
 
-    // Emotion game was successfully stopped and is passing back data
-    socket.on('emotionGameStats', (statsJSON: string) => {
-      console.log((new Date()) + " || Received emotionGameStats event")
-      // TODO: Get the UserID from mobile and save as part of the document
-      const statsRaw = JSON.parse(statsJSON);
+		// Forward to ROS
+		socket.on("recalibrate", () => io.emit("recalibrate"));
 
-      if (!statsRaw) {
-        console.log("Failed to save Emotion Game stats - UserID in return was undefined or empty")
-        return;
-      }
+		// Emotion game was successfully stopped and is passing back data
+		socket.on("emotionGameStats", (statsJSON: string) => {
+			console.log(new Date() + " || Received emotionGameStats event");
+			const statsRaw = JSON.parse(statsJSON);
 
-      const finishedGame = new EmotionRecognition({
-        Correct: statsRaw.Correct ?? [0, 0, 0, 0],
-        Wrong: statsRaw.Wrong ?? [0, 0, 0, 0],
-        NumPlays: statsRaw.NumPlays ?? 0,
-        UserID: statsRaw.UserID ?? "",
-        GameFin: new Date()
-      });
+			if (!statsRaw) {
+				console.log(
+					"Failed to save Emotion Game stats - UserID in return was undefined or empty"
+				);
+				return;
+			}
 
-      finishedGame.save((err) => {
-        if (err) console.error(err);
-        else console.log("Successfully saved event!");
-      })
+			if (!statsRaw.UserID) {
+				console.log(
+					"Could not save emotion game stats because UserID property not found:\n",
+					statsRaw
+				);
+				return;
+			}
 
+			const finishedGame = new EmotionRecognition({
+				Correct: statsRaw.Correct ?? [0, 0, 0, 0],
+				Wrong: statsRaw.Wrong ?? [0, 0, 0, 0],
+				NumPlays: statsRaw.NumPlays ?? 0,
+				UserID: statsRaw.UserID,
+				GameFin: new Date(),
+			});
 
-      socket.on("disconnecting", reason => {
-        console.log(`disconnecting ${socket.id}: ${reason}`);
-      });
-    });
-  })
+			finishedGame.save((err) => {
+				if (err) console.error(err);
+				else console.log("Successfully saved event!");
+			});
+
+			socket.on("disconnecting", (reason) => {
+				console.log(`disconnecting ${socket.id}: ${reason}`);
+			});
+		});
+	});
 };
