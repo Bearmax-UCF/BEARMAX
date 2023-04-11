@@ -4,7 +4,7 @@ import * as d3 from "d3";
 export const Graph = (props) => {
 
     // This is just test data for building graph
-    const [data] = useState ([25, 23, 10, 15, 20, 21, 28, 20, 15, 10, 1000, 1900, 10, 29, 100,200, 100,234,233,245,246,21,456,2,345,12]);
+    const [data] = useState ([25, 23, 10, 15, 20, 21, 28, 20, 15]);
 
     const svgRef = useRef();
 
@@ -17,7 +17,7 @@ export const Graph = (props) => {
         const svg = d3.select(svgRef.current)
             .attr('width', w)
             .attr('height', h)
-            .style('background', '#333')
+            .style('background', '#ffff')
             .style('overflow', 'visible');
 
         // setting th scaling

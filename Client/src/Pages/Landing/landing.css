@@ -25,15 +25,26 @@
 }
 
 .useBear {
-    max-width: 30%;
+    max-width: 40%;
     float: right;
 
     margin-right: 5%;
+    margin-top: 20%;
+}
+
+.useHead {
+    text-align: center;
+}
+
+.howToUse {
+    display: inline-block;
 }
 
 .textUse {
-    float: left;
-    margin-left: 20%;
+    text-align: left;
+
+    margin-right: 50%;
+    margin-left: 2%;
 }
 
 .landingButton {
