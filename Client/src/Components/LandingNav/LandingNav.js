@@ -13,7 +13,7 @@ export default function LandingNav() {
             <ul>
                 <CustomLink to="/">Home</CustomLink>
                 <CustomLink to="/about-us">About BearMax</CustomLink>
-                <CustomLink to="/how-to-use">How to Use BearMax</CustomLink>
+                
                 <CustomLink to="/contact-us">Contact Us</CustomLink>
             </ul>
         </nav>

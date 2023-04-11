@@ -14,7 +14,7 @@ export const HowToUse = (props) => {
     return (
         
         <div>
-            <NavBar />
+            
             
 
            <div className="howToUse">

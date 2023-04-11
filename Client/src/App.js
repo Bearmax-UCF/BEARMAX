@@ -28,7 +28,6 @@ function App() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/about-us" element={<AboutUs />} />
-      <Route path="/how-to-use" element={<HowToUse />} />
       <Route path="/contact-us" element={<ContactUs />} />
 
       <Route path="/login" element={<LoginPage />} />
@@ -36,7 +35,7 @@ function App() {
 
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/report-hist" element={<ReportHist />} />
-      <Route path="/calibrate" element={<Calibrate />} />
+      <Route path="/how-to-use" element={<Calibrate />} />
       <Route path="/settings" element={<Settings />} />
 
     </Routes>
