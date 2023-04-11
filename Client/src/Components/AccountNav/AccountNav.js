@@ -13,7 +13,7 @@ export default function LandingNav() {
             <ul>
                 <CustomLink to="/dashboard">Main Dashboard</CustomLink>
                 <CustomLink to="/report-hist">Report History</CustomLink>
-                <CustomLink to="/calibrate">Calibrate BearMax</CustomLink>
+                <CustomLink to="/calibrate">Mobile App</CustomLink>
                 <CustomLink to="/settings">Settings</CustomLink>
             </ul>
         </nav>

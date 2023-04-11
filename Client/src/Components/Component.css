@@ -40,7 +40,17 @@
     color: #56B19C;
 }
 
-.graphDisplay {
-    display:flex;
+.dashTitle {
+    display: flex;
     margin-left: 5%;
+}
+.dash {
+    display: flex;
+    margin-left: 5%;
+}
+
+.dashNote {
+    margin-left: 9%;
+    width: 40%;
+    background-color: rgb(255, 255, 255);
 }

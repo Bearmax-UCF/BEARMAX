@@ -11,10 +11,11 @@ export const Dashboard = (props) => {
         <div>
             <NavBar />
 
-
-            <h3 className="graphDisplay">Galvanic Skin Response</h3>
-            <div className="graphDisplay">
+            <h3 className="dashTitle">Galvanic Skin Response</h3>
+            <div className="dash">
                 <Graph/>
+
+                <textarea className="dashNote"></textarea>
             </div>
         </div>
     )
