@@ -25,11 +25,11 @@
 }
 
 .useBear {
-    max-width: 40%;
+    max-width: 400px;
     float: right;
 
     margin-right: 5%;
-    margin-top: 20%;
+    margin-top: 1%;
 }
 
 .useHead {
@@ -40,12 +40,33 @@
     display: inline-block;
 }
 
-.textUse {
+.textUse1 {
     text-align: left;
 
     margin-right: 50%;
     margin-left: 2%;
 }
+
+.container {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 10fr 25fr 1fr;
+    column-gap: 5px;
+}
+
+.textUse2 {
+    text-align: left;
+    float: right;
+    display: block;
+    
+    margin-left: 30%;
+}
+
+.catOne, .catTwo {
+    max-width: 23%;
+    margin-left: 10%;
+}
+
 
 .landingButton {
     display: block;
