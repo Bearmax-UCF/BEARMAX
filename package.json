@@ -6,7 +6,8 @@
     "dev": "npm run dev:client & npm run dev:server",
     "dev:server": "cross-env NODE_ENV=production npm run dev --workspace=Server",
     "dev:client": "cross-env BROWSER=none npm start --workspace=Client",
-    "start": "npm run build --workspace=Client && cross-env NODE_ENV=production npm start --workspace=Server"
+    "build": "npm run build --workspace=Client",
+    "start": "cross-env NODE_ENV=production npm start --workspace=Server"
   },
   "workspaces": [
     "Client",
