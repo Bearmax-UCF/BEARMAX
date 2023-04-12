@@ -143,7 +143,7 @@ export const AuthProvider = ({ children }) => {
 	useEffect(() => {
 		getUser().then((userData) => {
 			setUser(userData);
-			navigate("/dashboard");
+			if (userData) navigate("/dashboard");
 		});
 	}, []);
 
