@@ -75,11 +75,7 @@ export default (io: Server) => {
 					action +
 					"'"
 			);
-<<<<<<< Updated upstream
 			io.emit("emotionGame", action, senderID);
-=======
-			io.emit("emotionGame", action, socket.handshake.query.userID);
->>>>>>> Stashed changes
 		});
 
 		// Forward to ROS
