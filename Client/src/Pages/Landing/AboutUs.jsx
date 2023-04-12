@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import NavBar from "./../../Components/LandingNav/LandingNav"
 
 import Logo from "./../../Components/Images/face.png";
 import Bear from "./../../Components/Images/full.png";
 
 
-export const AboutUs = (props) => {
+export const AboutUs = () => {
 
     return (
         

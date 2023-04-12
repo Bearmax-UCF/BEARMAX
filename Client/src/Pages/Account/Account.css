@@ -1,36 +1,56 @@
 .calImg {
-    display: flex;
-    width: 20%;
-    height:30%;
+	display: flex;
+	width: 20%;
+	height: 30%;
 
-    border-style: solid;
-    border-radius: 1%;
-    border-color: #333;
+	border-style: solid;
+	border-radius: 1%;
+	border-color: #333;
 
-    margin-left: 5%;
-    margin-top: 2%;
+	margin-left: 5%;
+	margin-top: 2%;
 }
 
 .calibrateText {
-    display: inline-block;
+	display: inline-block;
 }
 
-.settingBear {
-    max-width: 40%;
-    display: flex;
-    margin-left: 2%;
-    margin-top: 10%;
+#settingsContainer {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-top: 10vh;
 }
 
-.settingsText {
-    float: right;
-
-    margin-right: 30%;
-    margin-top: 3%;
+#settingBear {
+	height: 300px;
 }
 
-.setInfo {
-    margin: 2%;
+#settingsTextContainer {
+	margin-left: 30px;
+	width: 40vw;
+}
 
-    margin-top: 100%;
+#settingsHeader {
+	font-size: 2.5em;
+}
+
+.userInfoDisplay {
+	font-size: 1.2em;
+}
+
+#logoutButton {
+	display: block;
+	margin: auto;
+	margin-top: 30px;
+	padding-top: 10px;
+	background-color: #2e3138;
+	border: none;
+	color: #56b19c;
+	padding: 7px 2px;
+	text-align: center;
+	font-size: larger;
+	border-radius: 12px;
+	width: 150px;
 }

@@ -1,48 +1,62 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { buildPath } from './BuildPath';
 
 import Logo from "./Images/face.png";
+import { AuthContext } from "../AuthContext";
 
-function Login ()
-{
-    var loginName;
-    var loginPassword;
+function Login() {
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [error, setError] = useState("");
 
-    const navigate = useNavigate();
+	const navigate = useNavigate();
+	const { login } = useContext(AuthContext);
 
-    const doLogin = async (event) => {
-        event.preventDefault();
+	const doLogin = async (event) => {
+		event.preventDefault();
 
-        var obj = {UserName: loginName.value, Password: loginPassword.value };
-        var js = JSON.stringify(obj);
+		if (!email || !password) {
+			setError("Invalid login.");
+			return;
+		}
 
-        if (loginName.value === "" || loginPassword === "") {
-            //setMessage("Please fille in both feilds.");
-            return;
-        } else {
-            // api calls will happen here
-        }
-    }
+		const res = await login(email, password);
+		setError(res);
+		if (res === "") navigate("/dashboard");
+	};
 
-    return (
-        <div>
-            <img src={Logo} className="loginLogo" alt="Logo: bear max face" />
+	return (
+		<div>
+			<img src={Logo} className="loginLogo" alt="Logo: bear max face" />
 
-            <form onSubmit={doLogin}>
-                <input type="text" className="loginText" id="loginName" placeholder="Username" ref={(c) => (loginName = c)}/> {" "}
-                <br />
-
-                <input type="password" className="loginText" id="loginPassword" placeholder="Password" ref={(c) => (loginPassword = c)}/> {" "}
-                <br />
-
-                <button type="submit" className="loginButton" onClick={doLogin}>Login</button>
-            </form>
-
-            <br />
-            <a className="logToReg" onClick={() => navigate("/register")}><u>Don't have an account? Register now!</u></a>            
-        </div>
-    );
+			<form onSubmit={doLogin}>
+				<input
+					type="text"
+					className="loginText"
+					id="loginEmail"
+					placeholder="Email"
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+				/>
+				<input
+					type="password"
+					className="loginText"
+					id="loginPassword"
+					placeholder="Password"
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+				/>
+				<p className="errorText">{error}</p>
+				<button type="submit" className="loginButton" onClick={doLogin}>
+					Login
+				</button>
+				<br />
+			</form>
+			<button className="logToReg" onClick={() => navigate("/register")}>
+				<u>Don't have an account? Register now!</u>
+			</button>
+		</div>
+	);
 }
 
 export default Login;
