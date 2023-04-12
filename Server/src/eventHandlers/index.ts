@@ -14,20 +14,6 @@ export default (io: Server) => {
 	//       const isAuthorized = rawSocket.request.client.authorized;
 	//       console.log(`NEW CONNECTION: ${isAuthorized}`);
 
-<<<<<<< HEAD
-	//       if (!isAuthorized) {
-	//         const err = new Error("not authorized");
-	//         (err as Error & { data: { content: string; } }).data = {
-	//           content: "Not Authorized, invalid or missing client certificate."
-	//         };
-	//         rawSocket.emit("connect_error", err);
-	//         rawSocket.close();
-	//       }
-	//     });
-	//   }
-
-	/*
-=======
   // Ensure websocket clients have a valid client certificate
   if (constants.isProduction) {
     io.engine.on("connection", (rawSocket) => {
@@ -62,7 +48,6 @@ export default (io: Server) => {
   }
 
   /*
->>>>>>> fd6ab0d (Add jwt bearer authentication to websockets)
   Events:
 
     Server listening:

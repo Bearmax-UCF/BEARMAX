@@ -19,15 +19,15 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// // Setup MongoDB Connection
-// const dbClient = mongoose.connect(constants.mongo_uri).then((m) => {
-// 	console.log("CONNECTED TO MONGODB");
-// 	return m.connection.getClient();
-// });
+// Setup MongoDB Connection
+const dbClient = mongoose.connect(constants.mongo_uri).then((m) => {
+	console.log("CONNECTED TO MONGODB");
+	return m.connection.getClient();
+});
 
-// // Setup Auth (Passport & Sessions)
-// // @ts-ignore
-// setupAuthSvc(app, dbClient);
+// Setup Auth (Passport & Sessions)
+// @ts-ignore
+setupAuthSvc(app, dbClient);
 
 // Setup Routes
 app.use("/", routes);
