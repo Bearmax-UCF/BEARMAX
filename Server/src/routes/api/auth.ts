@@ -3,7 +3,6 @@ import { ExtractJwt } from "passport-jwt";
 import requireLocalAuth from "../../middleware/requireLocalAuth";
 import AuthToken from "../../models/AuthToken";
 import User from "../../models/User";
-import PhysicianNotes from "../../models/PhysicianNotes";
 import jwt from "jsonwebtoken";
 const router = Router();
 
@@ -70,36 +69,6 @@ router.get("/logout", async (req, res, next) => {
 	}
 	return res.status(400).send({
 		message: "Logout failed: Couldn't decode token from request.",
-	});
-});
-
-// Added API for notes... need to be checked.
-router.get("/note", async (req, res) => {
-	PhysicianNotes.find((err, result) => {
-		if (err) {
-			console.log(err);
-		} else {
-			res.json(result);
-		}
-	});
-});
-
-router.post("/newNote", async (req, res) => {
-	const newNote = new PhysicianNotes(req.body);
-	newNote.save();
-
-	console.log("Note added successfully");
-});
-
-router.post("/deleteNote", async (req, res) => {
-	const id = req.body.idNote;
-
-	PhysicianNotes.findByIdAndDelete(id, (err: any) => {
-		if (err) {
-			console.log(err);
-		} else {
-			console.log("Note Deleted Successfully");
-		}
 	});
 });
 

@@ -1,7 +1,9 @@
-import type { Server } from "socket.io";
+import type { Server, Socket } from "socket.io";
 import constants from "../utils/constants";
-import { EmotionGameAction, EmotionGameStats } from "../utils/types";
-import EmotionRecognition from "../models/EmotionRecognition";
+import { EmotionGameAction, EmotionGameStats } from "../utils/types"
+import EmotionRecognition from "../models/EmotionRecognition"
+import requireJwtAuth from "../middleware/requireJwtAuth";
+import passport from "passport";
 
 /** Register socket.io event handlers
  */
@@ -12,6 +14,7 @@ export default (io: Server) => {
 	//       const isAuthorized = rawSocket.request.client.authorized;
 	//       console.log(`NEW CONNECTION: ${isAuthorized}`);
 
+<<<<<<< HEAD
 	//       if (!isAuthorized) {
 	//         const err = new Error("not authorized");
 	//         (err as Error & { data: { content: string; } }).data = {
@@ -24,6 +27,42 @@ export default (io: Server) => {
 	//   }
 
 	/*
+=======
+  // Ensure websocket clients have a valid client certificate
+  if (constants.isProduction) {
+    io.engine.on("connection", (rawSocket) => {
+      const auth_header: String | undefined = rawSocket.request.headers.authorization;
+      const token = auth_header?.replace("Bearer", "").trim();
+
+      const isAuthorized = rawSocket.request.client.authorized;
+
+      if (!isAuthorized && token === undefined) {
+        const err = new Error("not authorized");
+        (err as Error & { data: { content: string; } }).data = {
+          content: "Not Authorized, invalid or missing client certificate."
+        };
+        rawSocket.emit("connect_error", err);
+        rawSocket.close();
+      } else if (!isAuthorized && token) {
+        passport.authenticate('jwt',
+          { session: false }, (e, user) => {
+            if (!user) {
+              const err = new Error("not authorized");
+              (err as Error & { data: { content: string; } }).data = {
+                content: "Not Authorized, invalid or missing client certificate."
+              };
+              rawSocket.emit("connect_error", err);
+              rawSocket.close();
+            } else {
+              rawSocket.request.client.user = user
+            }
+          })(rawSocket.request, {}, ()=>{});
+      }
+    });
+  }
+
+  /*
+>>>>>>> fd6ab0d (Add jwt bearer authentication to websockets)
   Events:
 
     Server listening:
