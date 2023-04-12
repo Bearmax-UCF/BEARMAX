@@ -11,10 +11,6 @@ export const AboutUs = () => {
         
         <div>
             <NavBar />
-            
-            <div className="title">
-                <img src={Logo} className="smLandLogo" alt="Logo: bear max face" />
-            </div>
 
             <img src={Bear} className="aboutBear" alt="Design of bearmax, brown simple bear" />
             

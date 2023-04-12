@@ -29,19 +29,15 @@ const dbClient = mongoose.connect(constants.mongo_uri).then((m) => {
 // @ts-ignore
 setupAuthSvc(app, dbClient);
 
+app.use(express.static(path.join(__dirname, "../../Client/build")));
+
 // Setup Routes
 app.use("/", routes);
 
 // Serve the frontend app
 if (constants.isProduction) {
-	app.use(
-		"/static",
-		express.static(path.join(__dirname, "../../Client/build/static/"))
-	);
 	app.get("*", function (_, res) {
-		res.sendFile("index.html", {
-			root: path.join(__dirname, "../../Client/build/"),
-		});
+		res.sendFile(path.join(__dirname, "../../Client/build/index.html"));
 	});
 } else {
 	app.use(
