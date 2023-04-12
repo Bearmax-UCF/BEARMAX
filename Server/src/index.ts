@@ -8,6 +8,7 @@ import { createServer as createSecureServer, ServerOptions } from "https";
 import { Server } from "socket.io";
 import constants from "./utils/constants";
 
+/*
 const options: ServerOptions = {
   key: fs.readFileSync(`${__dirname}/../certs/server-key.pem`),
   cert: fs.readFileSync(`${__dirname}/../certs/server-crt.pem`),
@@ -17,8 +18,13 @@ const options: ServerOptions = {
   requestCert: true,
   rejectUnauthorized: false
 };
+*/
 
+<<<<<<< Updated upstream
 const server = false ? createSecureServer(options, app) : createServer(app);
+=======
+const server = createServer(app);
+>>>>>>> Stashed changes
 const io = new Server(server);
 
 import setupAuthSvc from "./services/auth";

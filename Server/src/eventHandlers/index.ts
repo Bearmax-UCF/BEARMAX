@@ -46,7 +46,7 @@ export default (io: Server) => {
   */
 
 	io.on("connection", (socket) => {
-		console.log("New connection " + socket.id);
+		console.log("New connection " + socket.id + " with userID " + socket.handshake.query.userID);
 
 		// Forward to mobile
 		socket.on("speak", (message: string) => {
@@ -75,11 +75,18 @@ export default (io: Server) => {
 					action +
 					"'"
 			);
+<<<<<<< Updated upstream
 			io.emit("emotionGame", action, senderID);
+=======
+			io.emit("emotionGame", action, socket.handshake.query.userID);
+>>>>>>> Stashed changes
 		});
 
 		// Forward to ROS
-		socket.on("recalibrate", () => io.emit("recalibrate"));
+		socket.on("recalibrate", () => {
+			console.log(new Date() + " || Received recalibrate event");
+			io.emit("recalibrate")
+		});
 
 		// Emotion game was successfully stopped and is passing back data
 		socket.on("emotionGameStats", (statsJSON: string) => {
