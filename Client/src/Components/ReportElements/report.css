@@ -1,7 +1,8 @@
 #notesContainer {
 	display: flex;
 	width: 100%;
-	padding: 5vh;
+	padding: 2.5vh;
+	padding-bottom: 0;
 }
 
 #notesDrawer {
@@ -12,9 +13,9 @@
 }
 
 #drawerContainer {
-	background-color: #333;
+	background-color: #333333;
 	height: 90%;
-	padding-top: 5px;
+	overflow: auto;
 }
 
 .noteRow {
@@ -23,16 +24,28 @@
 	transition: font-size 0.2s linear;
 	background-color: #333333;
 	border: none;
-	height: 30px;
+	border-bottom: 1px solid #4a9584;
+	transition: background-color 0.1s linear;
 }
 
 .noteRow:hover {
-	font-size: 1.4em;
 	cursor: pointer;
+	background-color: #56b19c;
+}
+
+.noteRow:hover > .noteRowTitle {
+	color: white;
 }
 
 .noteRowTitle {
-	color: rgb(86, 177, 156);
+	color: #56b19c;
+	margin: 10px;
+}
+
+.activeNoteRowTitle {
+	color: #929ce7;
+	font-size: 1.4em;
+	font-weight: 600;
 }
 
 #drawerHeader {
@@ -40,19 +53,30 @@
 	margin-top: 0px;
 }
 
+#dateSwitchContainer {
+	display: flex;
+	align-items: center;
+	padding-left: 10px;
+}
+
+#dateSwitchLabel {
+	padding-left: 10px;
+	font-size: 1.1em;
+	font-weight: 600;
+}
+
 .noteButton {
 	border-radius: 5px;
 	border: none;
-	background-color: rgb(86, 177, 156);
+	background-color: #56b19c;
 	color: #333333;
 	font-size: 1em;
 	font-weight: bold;
 
 	display: block;
 	height: 50px;
-	width: 160px;
+	width: 120px;
 	font-size: 1.5em;
-	margin-top: 15px;
 }
 
 .noteButton:hover {
@@ -60,13 +84,19 @@
 }
 
 .noteButton:active {
-	background-color: rgb(74, 149, 132);
+	background-color: #4a9584;
+}
+
+#deleteNoteButton {
+	background-color: #de5c4b;
 }
 
 #activeNoteContainer {
 	width: 100%;
-	margin-top: 5vh;
 	height: 95vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 #notePlaceholderText {
@@ -97,6 +127,13 @@
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
+	padding-top: 10px;
+}
+
+#saveStatus {
+	font-size: 1.4em;
+	text-decoration: underline;
 }
 
 @media screen and (max-width: 1200px) {

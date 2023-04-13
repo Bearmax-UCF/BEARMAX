@@ -16,7 +16,6 @@ router.get("/", requireJwtAuth, async (req, res, next) => {
 
 router.post("/", requireJwtAuth, async (req, res, next) => {
 	try {
-		console.log(req.body);
 		const newNote = new PhysicianNotes(req.body);
 		newNote.save();
 
@@ -28,7 +27,6 @@ router.post("/", requireJwtAuth, async (req, res, next) => {
 
 router.patch("/:id", requireJwtAuth, async (req, res, next) => {
 	const id = req.params.id;
-	console.log("Patching " + id);
 	try {
 		await PhysicianNotes.findByIdAndUpdate(id, req.body);
 		res.status(200).send();

@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../AuthContext";
 import { buildPath } from "../BuildPath";
 
+import Switch from "react-switch";
+
 /*
 TODOs:
 - Scrap dropdown and create a column for all notes
@@ -19,24 +21,38 @@ TODOs:
 export const Comments = () => {
 	const [activeNote, setActiveNote] = useState(null);
 	const [allNotes, setAllNotes] = useState([]);
+	const [saveStatus, setSaveStatus] = useState("Unsaved");
+	const [showDates, setShowDates] = useState(false);
 
 	const { user } = useContext(AuthContext);
 
-	const saveNote = async () => {
+	const getAllNotes = async () => {
 		try {
-			const res = await fetch(buildPath(`/api/note/${activeNote._id}`), {
-				method: "PATCH",
+			const res = await fetch(buildPath("/api/note/"), {
+				method: "GET",
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",
 					Authorization: "Bearer " + user.token,
 				},
-				body: JSON.stringify(activeNote),
 			});
-			if (res.status === 200) await getAllNotes();
+			if (res.status === 200) {
+				let notes = await res.json();
+				notes = notes.map((note) => ({
+					...note,
+					date: new Date(note.date),
+				}));
+				notes.sort((a, b) => {
+					return b.date.getTime() - a.date.getTime();
+				});
+
+				setAllNotes(notes);
+				return notes;
+			}
 		} catch (err) {
 			console.error(err);
 		}
+		return [];
 	};
 
 	const createNote = async () => {
@@ -70,10 +86,27 @@ export const Comments = () => {
 		}
 	};
 
-	const getAllNotes = async () => {
+	const saveNote = async () => {
 		try {
-			const res = await fetch(buildPath("/api/note/"), {
-				method: "GET",
+			const res = await fetch(buildPath(`/api/note/${activeNote._id}`), {
+				method: "PATCH",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + user.token,
+				},
+				body: JSON.stringify(activeNote),
+			});
+			if (res.status === 200) updateActiveNoteInDrawer();
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const deleteNote = async () => {
+		try {
+			const res = await fetch(buildPath(`/api/note/${activeNote._id}`), {
+				method: "DELETE",
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",
@@ -81,28 +114,34 @@ export const Comments = () => {
 				},
 			});
 			if (res.status === 200) {
-				let notes = await res.json();
-				notes = notes.map((note) => ({
-					...note,
-					date: new Date(note.date),
-				}));
-				notes.sort((a, b) => {
-					return b.date.getTime() - a.date.getTime();
-				});
-
-				setAllNotes(notes);
-				return notes;
+				const notes = await getAllNotes();
+				setActiveNote(notes[0]);
 			}
 		} catch (err) {
 			console.error(err);
 		}
-		return null;
+	};
+
+	const updateActiveNoteInDrawer = () => {
+		for (let i = 0; i < allNotes.length; i++) {
+			let currentNote = allNotes[i];
+			if (currentNote._id === activeNote._id) {
+				allNotes[i] = activeNote;
+				break;
+			}
+		}
+		setAllNotes([...allNotes]);
 	};
 
 	const changeToNote = async (newNote) => {
-		console.log(newNote);
-		if (activeNote) await saveNote();
-		setActiveNote(newNote);
+		let notes = allNotes;
+		if (activeNote && saveStatus !== "Saved!") {
+			await saveNote();
+			notes = await getAllNotes();
+		}
+		notes.forEach((note) => {
+			if (note._id === newNote._id) setActiveNote(note);
+		});
 	};
 
 	const updateActiveNote = (providedNotes) => {
@@ -120,18 +159,47 @@ export const Comments = () => {
 		getAllNotes().then((notes) => updateActiveNote(notes));
 	}, []);
 
+	useEffect(() => {
+		if (!activeNote) {
+			setSaveStatus("No selection");
+			return;
+		}
+
+		setSaveStatus("Saving...");
+		// Save note after no changes made for 2 second
+		const updater = setTimeout(async () => {
+			await saveNote();
+			setSaveStatus("Saved!");
+		}, 1000);
+		return () => clearTimeout(updater);
+	}, [activeNote]);
+
 	function getFormattedDate(date) {
 		if (typeof date === "string") return date;
 
-		var year = date.getFullYear();
+		const year = date.getFullYear();
 
-		var month = (1 + date.getMonth()).toString();
+		let month = (1 + date.getMonth()).toString();
 		month = month.length > 1 ? month : "0" + month;
 
-		var day = date.getDate().toString();
+		let day = date.getDate().toString();
 		day = day.length > 1 ? day : "0" + day;
 
-		return month + "/" + day + "/" + year;
+		let dateString = month + "/" + day + "/" + year;
+
+		let hour = date.getHours();
+		let formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+		let minute = date.getMinutes();
+		let suffix = hour >= 12 ? "PM" : "AM";
+
+		let timeString =
+			formattedHour +
+			":" +
+			(minute < 10 ? "0" + minute : minute) +
+			" " +
+			suffix;
+
+		return dateString + ", " + timeString;
 	}
 
 	return (
@@ -147,14 +215,29 @@ export const Comments = () => {
 								key={note._id}
 							>
 								<p
-									className="noteRowTitle"
+									className={`noteRowTitle ${
+										activeNote._id === note._id
+											? "activeNoteRowTitle"
+											: ""
+									}`}
 									placeholder="Note Title"
 								>
-									{note.title ?? "Untitled Note"}
+									{showDates
+										? getFormattedDate(note.date)
+										: note.title ?? "Untitled Note"}
 								</p>
 							</button>
 						);
 					})}
+				</div>
+				<div id="dateSwitchContainer">
+					<Switch
+						onChange={(checked) => setShowDates(checked)}
+						checked={showDates}
+						onColor="#56b19c"
+						offColor="#de5c4b"
+					/>
+					<p id="dateSwitchLabel">Show Dates</p>
 				</div>
 			</div>
 			<div id="activeNoteContainer">
@@ -176,18 +259,17 @@ export const Comments = () => {
 								: "Date N/A"}
 						</h4>
 					</>
-				) : (
-					<h1 id="notePlaceholderText">Create note to get started!</h1>
-				)}
+				) : null}
 
 				<textarea
 					id="noteNote"
-					onChange={(e) =>
+					onChange={(e) => {
 						setActiveNote({
 							...activeNote,
 							note: e.target.value,
-						})
-					}
+						});
+					}}
+					disabled={!activeNote}
 					value={activeNote ? activeNote.note : ""}
 				></textarea>
 
@@ -197,14 +279,15 @@ export const Comments = () => {
 						className="noteButton"
 						onClick={createNote}
 					>
-						Blank Note
+						New
 					</button>
+					<p id="saveStatus">{saveStatus}</p>
 					<button
-						id="saveNoteButton"
+						id="deleteNoteButton"
 						className="noteButton"
-						onClick={saveNote}
+						onClick={deleteNote}
 					>
-						Save Note
+						Delete
 					</button>
 				</div>
 			</div>
