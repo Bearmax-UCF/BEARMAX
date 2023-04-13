@@ -4,6 +4,11 @@ import Graph from "../../Components/HomeGraph/graph";
 import NavBar from "./../../Components/AccountNav/AccountNav";
 
 export const Dashboard = () => {
+
+	const saveNote = () => {
+		// TODO
+	};
+
 	return (
 		<div>
 			<NavBar />
@@ -12,7 +17,10 @@ export const Dashboard = () => {
 			<div className="dash">
 				<Graph />
 
-				<textarea className="dashNote"></textarea>
+				<div>
+					<textarea className="dashNote"></textarea>
+					<button  className="dashButton1"onClick={saveNote}>Save Note</button>
+				</div>
 			</div>
 		</div>
 	);
