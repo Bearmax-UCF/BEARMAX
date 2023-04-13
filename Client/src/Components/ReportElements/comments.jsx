@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { buildPath } from "../BuildPath";
 
 import { AuthContext } from "../../AuthContext";
+import { buildPath } from "../BuildPath";
 
 /*
-
 TODOs:
 - Scrap dropdown and create a column for all notes
     - Pull all notes with useEffect at loadup
@@ -18,81 +17,181 @@ TODOs:
 */
 
 export const Comments = () => {
-	const [editing, setEditing] = useState(false);
-	const [allNotes, setAllNotes] = useState([
-		{
-			title: "Example",
-			date: new Date(),
-			note: "Lorem Ipsum Here, but way longer",
-			userID: "irrelevant",
-			_id: "irrelevant",
-		},
-		{
-			title: "Example2",
-			date: new Date(),
-			note: "Lorem Ipsum Here Again",
-			userID: "irrelevant",
-			_id: "irrelevant",
-		},
-		{
-			title: "Example3",
-			note: "You get the jist",
-			userID: "irrelevant",
-			_id: "irrelevant",
-		},
-	]);
-
-	const [activeNote, setActiveNote] = useState({});
+	const [activeNote, setActiveNote] = useState(null);
+	const [allNotes, setAllNotes] = useState([]);
 
 	const { user } = useContext(AuthContext);
 
-	const saveNote = () => {
-		// TODO
+	const saveNote = async () => {
+		try {
+			const res = await fetch(buildPath(`/api/note/${activeNote._id}`), {
+				method: "PATCH",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + user.token,
+				},
+				body: JSON.stringify(activeNote),
+			});
+			if (res.status === 200) await getAllNotes();
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
-	const createNote = () => {
-		// TODO
+	const createNote = async () => {
+		if (activeNote) await saveNote();
+
+		try {
+			const res = await fetch(buildPath("/api/note/"), {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + user.token,
+				},
+				body: JSON.stringify({
+					title: "Untitled Note",
+					date: new Date(),
+					note: "",
+					userID: user.id,
+				}),
+			});
+
+			if (res.status === 200) {
+				const data = await res.json();
+				const retNotes = await getAllNotes();
+				retNotes.forEach((note) => {
+					if (note._id === data.newNote._id) setActiveNote(note);
+				});
+			}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
-	// useEffect(() => {
-	// 	fetch(buildPath("/api/note/"), {
-	// 		method: "GET",
-	// 		headers: {
-	// 			Accept: "application/json",
-	// 			"Content-Type": "application/json",
-	// 			Authorization: "Bearer " + user.token,
-	// 		},
-	// 	})
-	// 		.then((res) => res.json())
-	// 		.then((data) => setAllNotes(data))
-	// 		.catch((err) => console.error(err));
-	// }, []);
+	const getAllNotes = async () => {
+		try {
+			const res = await fetch(buildPath("/api/note/"), {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + user.token,
+				},
+			});
+			if (res.status === 200) {
+				let notes = await res.json();
+				notes = notes.map((note) => ({
+					...note,
+					date: new Date(note.date),
+				}));
+				notes.sort((a, b) => {
+					return b.date.getTime() - a.date.getTime();
+				});
 
-	console.log(allNotes);
+				setAllNotes(notes);
+				return notes;
+			}
+		} catch (err) {
+			console.error(err);
+		}
+		return null;
+	};
+
+	const changeToNote = async (newNote) => {
+		if (activeNote) await saveNote();
+		setActiveNote(newNote);
+	};
+
+	const updateActiveNote = () => {
+		if (!activeNote) {
+			setActiveNote(allNotes[0]);
+		} else {
+			allNotes.forEach((note) => {
+				if (note._id === activeNote._id) setActiveNote(note);
+			});
+		}
+	};
+
+	useEffect(() => {
+		getAllNotes();
+		updateActiveNote();
+	}, []);
+
+	function getFormattedDate(date) {
+		if (typeof date === "string") return date;
+
+		var year = date.getFullYear();
+
+		var month = (1 + date.getMonth()).toString();
+		month = month.length > 1 ? month : "0" + month;
+
+		var day = date.getDate().toString();
+		day = day.length > 1 ? day : "0" + day;
+
+		return month + "/" + day + "/" + year;
+	}
 
 	return (
-		<div className="notesContainer">
-			<div className="notesDrawer">
-				<div class="drawerContainer">
+		<div id="notesContainer">
+			<div id="notesDrawer">
+				<h3 id="drawerHeader">Your Notes</h3>
+				<div id="drawerContainer">
 					{allNotes.map((note) => {
 						return (
-							<div class="noteRow">
-								<p class="noteRowTitle">
+							<button
+								className="noteRow"
+								onClick={() => changeToNote(note)}
+								key={note._id}
+							>
+								<p
+									className="noteRowTitle"
+									placeholder="Note Title"
+								>
 									{note.title ?? "Untitled Note"}
 								</p>
-							</div>
+							</button>
 						);
 					})}
 				</div>
-				<button id="createNoteButton" onClick={createNote}>
-					Blank Note
-				</button>
 			</div>
 			<div id="activeNoteContainer">
-				<textarea id="activeNote"></textarea>
-				<button id="saveNoteButton" onClick={saveNote}>
-					Save Note
-				</button>
+				<input
+					id="noteTitle"
+					onChange={(e) =>
+						setActiveNote({ ...activeNote, title: e.target.value })
+					}
+					value={activeNote ? activeNote.title : ""}
+				/>
+				<h4 id="noteDate">
+					{activeNote && activeNote.date
+						? getFormattedDate(activeNote.date)
+						: "Date N/A"}
+				</h4>
+				<textarea
+					id="noteNote"
+					onChange={(e) =>
+						setActiveNote({ ...activeNote, note: e.target.value })
+					}
+					value={activeNote ? activeNote.note : ""}
+				></textarea>
+				<div id="saveContainer">
+					<button
+						id="createNoteButton"
+						className="noteButton"
+						onClick={createNote}
+					>
+						Blank Note
+					</button>
+					<button
+						id="saveNoteButton"
+						className="noteButton"
+						onClick={saveNote}
+					>
+						Save Note
+					</button>
+				</div>
 			</div>
 		</div>
 	);
