@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { buildPath } from "./Components/BuildPath";
 
 export const AuthContext = createContext({});
 
@@ -35,17 +36,14 @@ export const AuthProvider = ({ children }) => {
 
 	const loginFunction = async (email, password) => {
 		try {
-			const res = await fetch(
-				`https://carewithbearmax.com/api/auth/login`,
-				{
-					method: "POST",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ email, password }),
-				}
-			);
+			const res = await fetch(buildPath("/api/auth/login"), {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ email, password }),
+			});
 
 			if (res.status === 200) {
 				const data = await res.json();
@@ -62,22 +60,19 @@ export const AuthProvider = ({ children }) => {
 
 	const signupFunction = async (email, firstName, lastName, password) => {
 		try {
-			const res = await fetch(
-				`https://carewithbearmax.com/api/auth/register`,
-				{
-					method: "POST",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						email,
-						firstName,
-						lastName,
-						password,
-					}),
-				}
-			);
+			const res = await fetch(buildPath("/api/auth/register"), {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email,
+					firstName,
+					lastName,
+					password,
+				}),
+			});
 			const data = await res.json();
 
 			if (res.status === 201) return await loginFunction(email, password);
@@ -92,17 +87,14 @@ export const AuthProvider = ({ children }) => {
 		if (!user) return "User not logged in!";
 
 		try {
-			const res = await fetch(
-				`https://carewithbearmax.com/api/auth/logout`,
-				{
-					method: "GET",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-						Authorization: "Bearer " + user.token,
-					},
-				}
-			);
+			const res = await fetch(buildPath("/api/auth/logout"), {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + user.token,
+				},
+			});
 
 			if (res.status === 200) {
 				setUser(null);
@@ -118,17 +110,14 @@ export const AuthProvider = ({ children }) => {
 	const getUserData = async () => {
 		if (!user) return null;
 		try {
-			const res = await fetch(
-				`https://carewithbearmax.com/api/users/me`,
-				{
-					method: "GET",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-						Authorization: "Bearer " + user.token,
-					},
-				}
-			);
+			const res = await fetch(buildPath("/api/users/me"), {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + user.token,
+				},
+			});
 
 			if (res.status === 200) {
 				const data = await res.json();

@@ -1,14 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const PhysicianNotes = new mongoose.Schema(
-    {
-        Note: {type: String}
-    },
-    { 
-        collection: 'PhysicianNotes' 
-    }
+	{
+		title: { type: String },
+		date: { type: Date },
+		note: { type: String },
+		userID: { type: String },
+	},
+	{
+		collection: "PhysicianNotes",
+	}
 );
 
-const model = mongoose.model('PhysicianNotes', PhysicianNotes)
+const model = mongoose.model("PhysicianNotes", PhysicianNotes);
 
-export default model
+export default model;

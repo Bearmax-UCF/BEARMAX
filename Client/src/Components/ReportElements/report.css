@@ -1,25 +1,52 @@
-textarea {
-    resize: none;
-    width: 100%;
-    height: 600px;
+.notesContainer {
+	display: flex;
+	width: 100%;
 }
 
-.notesDisplay {
-    display: flex;
-    margin-right: 5%;
-    margin-left: 65%;
-    margin-top: 10px;
-
-    width: 29.5%;
-
-    background-color: rgb(255, 255, 255);
+.notesDrawer {
+	width: 30%;
+	margin-left: 5vh;
+	margin-right: 5vh;
+	background-color: blue;
+	margin-top: 5vh;
+	height: 80vh;
 }
 
-.commSelect {
-    display: flex;
-    margin-right: 5%;
-    margin-left: 65%;
-    margin-top: 50px;
-
-    width: 29.5%;
+.noteRow {
 }
+
+.noteRowTitle {
+}
+
+.noteRowDate {
+}
+
+#activeNoteContainer {
+	width: 100%;
+}
+
+#activeNote {
+}
+
+#createNoteButton {
+}
+
+/* 
+<div className="notesContainer">
+			<div className="notesDrawer">
+				{allNotes.map((note) => {
+					return (
+						<div class="noteRow">
+							<p class="noteRowTitle">
+								{note.title ?? "Untitled Note"}
+							</p>
+							<p class="noteRowDate">{note.date ?? ""}</p>
+						</div>
+					);
+				})}
+			</div>
+			<div className="activeNoteContainer">
+				<textarea id="activeNote"></textarea>
+			</div>
+		</div>
+         */

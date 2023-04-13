@@ -1,20 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 
 import NavBar from "./../../Components/AccountNav/AccountNav";
 import Comments from "./../../Components/ReportElements/comments";
 
-export const ReportHist = (props) => {
+export const ReportHist = () => {
+	return (
+		<div>
+			<NavBar />
 
-    return (
-        
-        <div>
-            <NavBar />
-
-            <div>
-                <Comments />
-            </div>
-        </div>
-    )
-}
+			<div>
+				<Comments />
+			</div>
+		</div>
+	);
+};
 
 export default ReportHist;
