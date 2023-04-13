@@ -59,7 +59,7 @@ export const Graph = (props) => {
     const startRecord = () => {
         // pull from the db and store gsr v. time in data.
 
-    }
+    };
 
     return (
         <div className="graph">
