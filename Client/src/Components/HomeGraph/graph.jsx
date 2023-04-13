@@ -4,7 +4,7 @@ import * as d3 from "d3";
 export const Graph = (props) => {
 
     // This is just test data for building graph
-    const [data] = useState ([25, 23, 10, 15, 20, 21, 28, 20, 15]);
+    const [data] = useState ([]);
 
     const svgRef = useRef();
 
@@ -56,9 +56,16 @@ export const Graph = (props) => {
                 .attr('stroke', 'black');
     }, [data]);
 
+    const startRecord = () => {
+        // pull from the db and store gsr v. time in data.
+
+    }
+
     return (
-        <div className="Graph">
+        <div className="graph">
             <svg ref={svgRef}></svg>
+
+            <button className="dashButton" onClick={startRecord}>Start Recording</button>
         </div>
     )
 }
