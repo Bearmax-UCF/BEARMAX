@@ -100,23 +100,24 @@ export const Comments = () => {
 	};
 
 	const changeToNote = async (newNote) => {
+		console.log(newNote);
 		if (activeNote) await saveNote();
 		setActiveNote(newNote);
 	};
 
-	const updateActiveNote = () => {
+	const updateActiveNote = (providedNotes) => {
+		const from = providedNotes ?? allNotes;
 		if (!activeNote) {
-			setActiveNote(allNotes[0]);
+			setActiveNote(from[0]);
 		} else {
-			allNotes.forEach((note) => {
+			from.forEach((note) => {
 				if (note._id === activeNote._id) setActiveNote(note);
 			});
 		}
 	};
 
 	useEffect(() => {
-		getAllNotes();
-		updateActiveNote();
+		getAllNotes().then((notes) => updateActiveNote(notes));
 	}, []);
 
 	function getFormattedDate(date) {
@@ -157,25 +158,39 @@ export const Comments = () => {
 				</div>
 			</div>
 			<div id="activeNoteContainer">
-				<input
-					id="noteTitle"
-					onChange={(e) =>
-						setActiveNote({ ...activeNote, title: e.target.value })
-					}
-					value={activeNote ? activeNote.title : ""}
-				/>
-				<h4 id="noteDate">
-					{activeNote && activeNote.date
-						? getFormattedDate(activeNote.date)
-						: "Date N/A"}
-				</h4>
+				{activeNote ? (
+					<>
+						<input
+							id="noteTitle"
+							onChange={(e) =>
+								setActiveNote({
+									...activeNote,
+									title: e.target.value,
+								})
+							}
+							value={activeNote ? activeNote.title : ""}
+						/>
+						<h4 id="noteDate">
+							{activeNote && activeNote.date
+								? getFormattedDate(activeNote.date)
+								: "Date N/A"}
+						</h4>
+					</>
+				) : (
+					<h1 id="notePlaceholderText">Create note to get started!</h1>
+				)}
+
 				<textarea
 					id="noteNote"
 					onChange={(e) =>
-						setActiveNote({ ...activeNote, note: e.target.value })
+						setActiveNote({
+							...activeNote,
+							note: e.target.value,
+						})
 					}
 					value={activeNote ? activeNote.note : ""}
 				></textarea>
+
 				<div id="saveContainer">
 					<button
 						id="createNoteButton"
