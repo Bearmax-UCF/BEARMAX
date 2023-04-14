@@ -62,9 +62,10 @@ export const HowToUse = () => {
 							resting position if he loses sight of your child.
 						</li>
 						<li>
-							Check your results here, on the website, when
+							Check your results here on the website when
 							completed! These results will tell you how many
-							emotions your child mirrored correctly.
+							emotions your child mirrored correctly for
+							individual or over many sessions.
 						</li>
 					</ol>
 				</div>
@@ -83,40 +84,56 @@ export const HowToUse = () => {
 						<h3>Stress Detection Mode</h3>
 						<p>
 							Stress detection is a built-in, passive feature that
-							can be used alongside Bearmax when having access to
-							both the wearable device and website. This mode is
-							currently recommended for sessions with a clinician.
+							can be used alongside Bearmax while holding access
+							to both the wearable device and website. This mode
+							is currently recommended for sessions with a
+							clinician.
 						</p>
 						<ol>
 							<li>
 								To begin stress detection mode, have your child
 								wear the device on the wrist of their
-								non-dominant hand.{" "}
+								non-dominant hand.
 							</li>
 							<li>
 								Connect the electrodes from the device to the
 								following locations on the child's hand (based
-								on their comfort). You can either copy Image
-								Category A or Image Category B for electrode
-								placement. Image A: Electrodes placed at the
-								palm of the hand Image B: Electrodes placed at
-								the index and middle fingers{" "}
-							</li>
-							<li>Turn on the wearable device. </li>
-							<li>Log in to your account on the website. </li>
-							<li>
-								On the website, click "(I forgot button names)"
-								on the Dashboard (main page after logging in) to
-								connect the wearable device to the platform. (6)
-								If successful, data will begin to populate a
-								real-time graph for review on the Dashboard. If
-								unsuccessful, tips will be provided on how to
-								re-connect the device.
+								on their comfort). Copy the electrode placement
+								of either Image Category A or Image Category B
+								(see left).
+								<ul>
+									<li>
+										Image A: Electrodes placed at the palm
+										of the hand.
+									</li>
+									<li>
+										Image B: Electrodes placed at the index
+										and middle fingers.
+									</li>
+								</ul>
 							</li>
 							<li>
-								Click "(I forgot button names)" to stop data
-								collection from the Wearable Device and turn it
-								off.
+								Turn on the wearable device and log in to your
+								account on this website.
+							</li>
+							<li>
+								On the Main Dashboard page, lick "Start
+								Recording" to connect the wearable device to the
+								platform.
+								<ul>
+									<li>
+										If successful, data will begin to
+										populate a real-time graph for review.
+									</li>
+									<li>
+										If unsuccessful, tips will be provided
+										on how to re-connect the device.
+									</li>
+								</ul>
+							</li>
+							<li>
+								Click "Stop Recording" to stop data collection
+								from the Wearable Device and turn it off.
 							</li>
 							<li>
 								Save the data to your computer by clicking
