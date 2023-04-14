@@ -1,8 +1,11 @@
 .App {
-  text-align: center;
-  background-color: #856a5d;
-  min-height: 100vh;
+	text-align: center;
+	background-color: #856a5d;
+	min-height: 100vh;
 
-  font-family: Georgia, serif;
+	font-family: Georgia, serif;
 }
 
+.errorText {
+	color: #fc6161;
+}

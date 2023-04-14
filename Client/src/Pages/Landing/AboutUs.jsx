@@ -1,20 +1,15 @@
 import React from "react";
-import NavBar from "./../../Components/LandingNav/LandingNav";
 import Bear from "./../../Components/Images/full.png";
 
 export const AboutUs = () => {
 	return (
 		<div>
-			<NavBar />
-
 			<img
 				src={Bear}
 				className="aboutBear"
 				alt="Design of bearmax, brown simple bear"
 			/>
-
 			<h1>About BearMAX</h1>
-
 			<p className="aboutText">
 				BEARMAX is a robotic companion that facilitates social-emotional
 				learning (SEL) for children with autism. The primary function of
@@ -28,17 +23,16 @@ export const AboutUs = () => {
 				Additionally, clinicians and guardians can review all collected
 				data through our website. Examples of collected data include
 				health readings used for stress detection and statistics of the
-				user’s performance in the emotion detection game.{" "}
+				user’s performance in the emotion detection game.
 			</p>
 			<p className="aboutText">
-				{" "}
 				This project introduces new methods for detecting
 				overstimulation not found in other SEL robots. Additionally,
 				BEARMAX is designed to be portable and usable in a wide range of
 				environments. Our creation allows children with autism to be
 				more comfortable in their everyday activities and for clinicians
 				or guardians to better assess the child’s growth and response to
-				the robot.{" "}
+				the robot.
 			</p>
 		</div>
 	);

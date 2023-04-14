@@ -2,19 +2,21 @@ import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import "./App.css";
-import "./Components/LandingNav/Nav.css";
-import "./Pages/Landing/landing.css";
+import "./Components/NavBar/Nav.css";
+import "./Pages/Landing/Landing.css";
 import "./Pages/Account/Account.css";
 import "./Components/Component.css";
-import "./Components/ReportElements/report.css";
+import "./Components/Notes/NotesLayout.css";
+
+import NavBar from "./Components/NavBar/NavBar";
 
 import LandingPage from "./Pages/Landing/LandingPage";
 import AboutUs from "./Pages/Landing/AboutUs";
 import ContactUs from "./Pages/Landing/ContactUs";
 
 import Dashboard from "./Pages/Account/Dashboard";
-import ReportHist from "./Pages/Account/ReportHistory";
-import Calibrate from "./Pages/Account/Calibrate";
+import AllNotes from "./Pages/Account/AllNotes";
+import HowToUse from "./Pages/Account/HowToUse";
 import Settings from "./Pages/Account/Settings";
 
 import LoginPage from "./Pages/LoginPage";
@@ -32,6 +34,7 @@ function App() {
 
 	return (
 		<div className="App">
+			<NavBar />
 			<Routes>
 				<Route path="/" element={<LandingPage />} />
 				<Route path="/about-us" element={<AboutUs />} />
@@ -48,10 +51,10 @@ function App() {
 					}
 				/>
 				<Route
-					path="/report-hist"
+					path="/all-notes"
 					element={
 						<Protected user={user}>
-							<ReportHist />
+							<AllNotes />
 						</Protected>
 					}
 				/>
@@ -59,7 +62,7 @@ function App() {
 					path="/how-to-use"
 					element={
 						<Protected user={user}>
-							<Calibrate />
+							<HowToUse />
 						</Protected>
 					}
 				/>

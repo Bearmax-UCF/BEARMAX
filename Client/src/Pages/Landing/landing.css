@@ -1,13 +1,7 @@
 .landingLogo {
 	max-width: 20%;
 	justify-content: center;
-
 	text-align: center;
-}
-
-.smLandLogo {
-	max-width: 10%;
-	margin-left: 3rem;
 }
 
 .title {
@@ -23,50 +17,6 @@
 .aboutBear {
 	max-width: 15%;
 	margin-top: 20px;
-}
-
-.useBear {
-	max-width: 400px;
-	float: right;
-
-	margin-right: 5%;
-	margin-top: 1%;
-}
-
-.useHead {
-	text-align: center;
-}
-
-.howToUse {
-	display: inline-block;
-}
-
-.textUse1 {
-	text-align: left;
-
-	margin-right: 50%;
-	margin-left: 2%;
-}
-
-.container {
-	display: grid;
-	align-items: center;
-	grid-template-columns: 10fr 25fr 1fr;
-	column-gap: 5px;
-}
-
-.textUse2 {
-	text-align: left;
-	float: right;
-	display: block;
-
-	margin-left: 30%;
-}
-
-.catOne,
-.catTwo {
-	max-width: 23%;
-	margin-left: 10%;
 }
 
 .landingButton {
@@ -96,4 +46,41 @@
 	margin-left: 12%;
 	margin-right: 12%;
 	text-align: justify;
+}
+
+#meetTeamHeader {
+	margin-top: 50px;
+	margin-bottom: 30px;
+}
+
+#meetTeam {
+	margin: 10px 10px;
+	display: flex;
+	justify-content: center;
+}
+
+#leftMembers {
+	margin-right: 10vw;
+}
+
+.memberContainer {
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	text-align: start;
+	margin: 20px 0px;
+}
+
+.memberImage {
+	width: 10vw;
+	height: 10vw;
+	margin-right: 40px;
+	object-fit: cover;
+	border-radius: 10px;
+	border: 3px solid #2e3138;
+}
+
+.memberName {
+	font-size: 1.3em;
+	font-weight: bold;
 }
