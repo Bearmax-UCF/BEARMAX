@@ -24,14 +24,15 @@ import RegisterPage from "./Pages/RegisterPage";
 import { AuthContext } from "./AuthContext";
 
 import { Navigate } from "react-router-dom";
+import EmotionGame from "./Pages/Account/EmotionGame";
 
-const Protected = ({ user, children }) => {
+const Protected = ({ children }) => {
+	const { user } = useContext(AuthContext);
+
 	return !user ? <Navigate to="/login" replace /> : children;
 };
 
 function App() {
-	const { user } = useContext(AuthContext);
-
 	return (
 		<div className="App">
 			<NavBar />
@@ -45,7 +46,7 @@ function App() {
 				<Route
 					path="/dashboard"
 					element={
-						<Protected user={user}>
+						<Protected>
 							<Dashboard />
 						</Protected>
 					}
@@ -53,15 +54,23 @@ function App() {
 				<Route
 					path="/all-notes"
 					element={
-						<Protected user={user}>
+						<Protected>
 							<AllNotes />
+						</Protected>
+					}
+				/>
+				<Route
+					path="/emotion-game"
+					element={
+						<Protected>
+							<EmotionGame />
 						</Protected>
 					}
 				/>
 				<Route
 					path="/how-to-use"
 					element={
-						<Protected user={user}>
+						<Protected>
 							<HowToUse />
 						</Protected>
 					}
@@ -69,9 +78,19 @@ function App() {
 				<Route
 					path="/settings"
 					element={
-						<Protected user={user}>
+						<Protected>
 							<Settings />
 						</Protected>
+					}
+				/>
+				<Route
+					path="/*"
+					element={
+						<div id="noRouteContainer">
+							<h1 className="noRoute">
+								That Page Doesn't Exist!
+							</h1>
+						</div>
 					}
 				/>
 			</Routes>

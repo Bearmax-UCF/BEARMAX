@@ -9,3 +9,12 @@
 .errorText {
 	color: #fc6161;
 }
+
+#noRouteContainer {
+	width: 100vw;
+	height: 90vh;
+	font-size: x-large;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

@@ -10,7 +10,7 @@ export const LandingPage = () => {
 		<div className="landing">
 			<img src={Logo} className="landingLogo" alt="Logo: bear max face" />
 
-			<h2>A dashbord made with care, for care</h2>
+			<h2>A dashboard made with care, for care</h2>
 
 			<br></br>
 			<button
@@ -24,7 +24,7 @@ export const LandingPage = () => {
 				className="landingButton"
 				onClick={() => navigate("/register")}
 			>
-				Register for an Account
+				Register For an Account
 			</button>
 		</div>
 	);

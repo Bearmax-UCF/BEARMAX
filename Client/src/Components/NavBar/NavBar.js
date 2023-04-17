@@ -15,6 +15,7 @@ export default function NavBar() {
 				<ul>
 					<CustomLink to="/dashboard">Main Dashboard</CustomLink>
 					<CustomLink to="/all-notes">Report History</CustomLink>
+					<CustomLink to="/emotion-game">Emotion Game Review</CustomLink>
 					<CustomLink to="/how-to-use">How To Use</CustomLink>
 					<CustomLink to="/settings">Settings</CustomLink>
 				</ul>

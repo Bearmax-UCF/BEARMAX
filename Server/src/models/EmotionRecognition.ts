@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 /*
 Correct/Wrong Index Correlations:
@@ -9,17 +9,18 @@ Correct/Wrong Index Correlations:
 */
 
 const EmotionRecognition = new mongoose.Schema(
-    {
-        Correct: { type: Array },
-        Wrong: { type: Array },
-        GameFin: Date,
-        UserID: String
-    },
-    {
-        collection: 'EmotionRecognition'
-    }
+	{
+		Correct: Array,
+		Wrong: Array,
+		GameFin: Date,
+		UserID: String,
+		NumPlays: Number,
+	},
+	{
+		collection: "EmotionRecognition",
+	}
 );
 
-const model = mongoose.model('EmotionRecognition', EmotionRecognition)
+const model = mongoose.model("EmotionRecognition", EmotionRecognition);
 
-export default model
+export default model;
