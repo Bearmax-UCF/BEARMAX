@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import "./Components/NavBar/Nav.css";
-import "./Pages/Landing/landing.css";
+import "./Pages/Landing/Landing.css";
 import "./Pages/Account/Account.css";
 import "./Components/Component.css";
 import "./Components/Notes/NotesLayout.css";
