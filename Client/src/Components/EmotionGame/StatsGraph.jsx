@@ -54,11 +54,9 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 
 		// Create root container where we will append all other chart elements
 		const svgEl = d3.select(svgRef.current);
-
-		// Remove select elements, leaving tooltip and circle drawings so they don't spaz
 		svgEl.selectAll("*").remove();
-
 		svgEl.style("background", "#ffff").style("overflow", "visible");
+
 		const svg = svgEl
 			.append("g")
 			.attr("class", "emotionGraphContent")
@@ -160,7 +158,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 			.on("mouseout", focusMouseOut);
 
 		const mouseLine = svg
-			.append("path") // create vertical line to follow mouse
+			.append("path")
 			.attr("class", "mouse-line")
 			.attr("stroke", "#303030")
 			.attr("stroke-width", 2)
@@ -203,8 +201,8 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 				nearestDateYValues[thisDate] = yVals;
 				for (let j = 0; j < allEmotionData.length; j++)
 					yVals.push(
-						allEmotionData[i][j]
-							? allEmotionData[i][j].CorrectPercent
+						allEmotionData[j][i]
+							? allEmotionData[j][i].CorrectPercent
 							: undefined
 					);
 			}
@@ -250,7 +248,6 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 					.attr("x", "5")
 					.attr("dy", `14px`)
 					.attr("fill", LINE_COLORS[emotionIndex])
-					// TODO: This is very not correct
 					.text(
 						`${LINE_KEYS[emotionIndex]}: ${nearestDateYValues[
 							closestDate

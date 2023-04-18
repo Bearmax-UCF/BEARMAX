@@ -100,6 +100,7 @@ const GameReview = () => {
 
 	return (
 		<div id="gameReviewContainer">
+			{/* TODO: Display some helpful message that's different if there's no data yet */}
 			<StatsGraph
 				data={allGames}
 				dimensions={dimensions}
@@ -137,10 +138,9 @@ const GameReview = () => {
 						</div>
 					</div>
 
-					<div className="activeDataContainer">
+					{/* <div className="activeDataContainer">
 						<span className="graphOptionsHeader">Hovered Game</span>
-						{/* TODO: Get closes X to the current hover position where circles are drawn on each line, send that data back here and display */}
-					</div>
+					</div> */}
 
 					<div className="centerThing">
 						<div id="showLinesContainer">
