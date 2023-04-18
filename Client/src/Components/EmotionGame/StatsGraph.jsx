@@ -55,7 +55,10 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 		// Create root container where we will append all other chart elements
 		const svgEl = d3.select(svgRef.current);
 		svgEl.selectAll("*").remove();
-		svgEl.style("background", "#ffff").style("overflow", "visible");
+		svgEl
+			.style("background", "#ffff")
+			.style("overflow", "visible")
+			.attr("class", "svgBase");
 
 		const svg = svgEl
 			.append("g")
@@ -167,7 +170,8 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 		const tooltip = svg
 			.append("g")
 			.attr("class", "tooltip-wrapper")
-			.attr("display", "none");
+			.attr("display", "none")
+			.attr("pointer-events", "none");
 
 		const tooltipBackground = tooltip
 			.append("rect")
@@ -222,10 +226,18 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 				.append("tspan")
 				.attr("class", "tooltip-text-line")
 				.attr("x", "5")
-				.attr("y", "5")
+				.attr("y", "8")
 				.attr("dy", "13px")
 				.attr("font-weight", "bold")
 				.text(`${getFormattedDate(closestDate)}`);
+
+			tooltipText
+				.append("tspan")
+				.attr("class", "tooltip-text-line")
+				.attr("x", "15")
+				.attr("dy", "4px")
+				.attr("fill", "#e8e8e8")
+				.text("\u00A0");
 
 			for (
 				let emotionIndex = 0;
@@ -246,7 +258,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 					.append("tspan")
 					.attr("class", "tooltip-text-line")
 					.attr("x", "5")
-					.attr("dy", `14px`)
+					.attr("dy", "20px")
 					.attr("fill", LINE_COLORS[emotionIndex])
 					.text(
 						`${LINE_KEYS[emotionIndex]}: ${nearestDateYValues[
@@ -260,7 +272,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 			const rectOverlayWidth = rectOverlay.node().getBBox().width;
 			tooltipBackground
 				.attr("width", tooltipWidth + 10)
-				.attr("height", tooltipHeight + 10);
+				.attr("height", tooltipHeight + 20);
 			if (nearestDateXCord + tooltipWidth >= rectOverlayWidth) {
 				tooltip.attr(
 					"transform",
