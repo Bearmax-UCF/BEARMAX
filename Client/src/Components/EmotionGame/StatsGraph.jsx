@@ -45,8 +45,6 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 			}
 		}
 
-		console.log(allEmotionData);
-
 		/* Make the actual graph */
 
 		const xScale = d3
@@ -184,6 +182,8 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 		const tooltipText = tooltip.append("text");
 
 		function focusMouseMove(event) {
+			if (data.length === 0) return;
+
 			tooltip.attr("display", null);
 			const mouse = d3.pointer(event);
 			const dateOnMouse = xScale.invert(mouse[0]);
@@ -262,7 +262,6 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 
 				const emotionDataForGame =
 					allEmotionData[emotionIndex][closestDateGameIndex];
-				console.log(emotionDataForGame);
 				const amountText = `${emotionDataForGame.CorrectPercent.toFixed(
 					2
 				)}% (${emotionDataForGame.Correct}/${
