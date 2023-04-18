@@ -1,7 +1,7 @@
 import type { Server, Socket } from "socket.io";
 import constants from "../utils/constants";
-import { EmotionGameAction, EmotionGameStats } from "../utils/types"
-import EmotionRecognition from "../models/EmotionRecognition"
+import { EmotionGameAction, EmotionGameStats } from "../utils/types";
+import EmotionRecognition from "../models/EmotionRecognition";
 import requireJwtAuth from "../middleware/requireJwtAuth";
 import passport from "passport";
 
@@ -14,40 +14,42 @@ export default (io: Server) => {
 	//       const isAuthorized = rawSocket.request.client.authorized;
 	//       console.log(`NEW CONNECTION: ${isAuthorized}`);
 
-  // Ensure websocket clients have a valid client certificate
-  if (constants.isProduction) {
-    io.engine.on("connection", (rawSocket) => {
-      const auth_header: String | undefined = rawSocket.request.headers.authorization;
-      const token = auth_header?.replace("Bearer", "").trim();
+	// Ensure websocket clients have a valid client certificate
+	if (constants.isProduction) {
+		io.engine.on("connection", (rawSocket) => {
+			const auth_header: String | undefined =
+				rawSocket.request.headers.authorization;
+			const token = auth_header?.replace("Bearer", "").trim();
 
-      const isAuthorized = rawSocket.request.client.authorized;
+			const isAuthorized = rawSocket.request.client.authorized;
 
-      if (!isAuthorized && token === undefined) {
-        const err = new Error("not authorized");
-        (err as Error & { data: { content: string; } }).data = {
-          content: "Not Authorized, invalid or missing client certificate."
-        };
-        rawSocket.emit("connect_error", err);
-        rawSocket.close();
-      } else if (!isAuthorized && token) {
-        passport.authenticate('jwt',
-          { session: false }, (e, user) => {
-            if (!user) {
-              const err = new Error("not authorized");
-              (err as Error & { data: { content: string; } }).data = {
-                content: "Not Authorized, invalid or missing client certificate."
-              };
-              rawSocket.emit("connect_error", err);
-              rawSocket.close();
-            } else {
-              rawSocket.request.client.user = user
-            }
-          })(rawSocket.request, {}, ()=>{});
-      }
-    });
-  }
+			if (!isAuthorized && token === undefined) {
+				const err = new Error("not authorized");
+				(err as Error & { data: { content: string } }).data = {
+					content:
+						"Not Authorized, invalid or missing client certificate.",
+				};
+				rawSocket.emit("connect_error", err);
+				rawSocket.close();
+			} else if (!isAuthorized && token) {
+				passport.authenticate("jwt", { session: false }, (e, user) => {
+					if (!user) {
+						const err = new Error("not authorized");
+						(err as Error & { data: { content: string } }).data = {
+							content:
+								"Not Authorized, invalid or missing client certificate.",
+						};
+						rawSocket.emit("connect_error", err);
+						rawSocket.close();
+					} else {
+						rawSocket.request.client.user = user;
+					}
+				})(rawSocket.request, {}, () => {});
+			}
+		});
+	}
 
-  /*
+	/*
   Events:
 
     Server listening:
@@ -70,7 +72,12 @@ export default (io: Server) => {
   */
 
 	io.on("connection", (socket) => {
-		console.log("New connection " + socket.id + " with userID " + socket.handshake.query.userID);
+		console.log(
+			"New connection " +
+				socket.id +
+				" with userID " +
+				socket.handshake.query.userID
+		);
 
 		// Forward to mobile
 		socket.on("speak", (message: string) => {
@@ -105,7 +112,7 @@ export default (io: Server) => {
 		// Forward to ROS
 		socket.on("recalibrate", () => {
 			console.log(new Date() + " || Received recalibrate event");
-			io.emit("recalibrate")
+			io.emit("recalibrate");
 		});
 
 		// Emotion game was successfully stopped and is passing back data
@@ -142,10 +149,14 @@ export default (io: Server) => {
 				if (err) console.error(err);
 				else console.log("Successfully saved event!");
 			});
+		});
 
-			socket.on("disconnecting", (reason) => {
-				console.log(`disconnecting ${socket.id}: ${reason}`);
-			});
+		socket.on("GSR", (gsrValue: number, ts: string) => {
+			socket.emit("GSR", gsrValue, ts);
+		});
+
+		socket.on("disconnecting", (reason) => {
+			console.log(`disconnecting ${socket.id}: ${reason}`);
 		});
 	});
 };
