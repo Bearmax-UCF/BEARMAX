@@ -65,7 +65,7 @@
 
 .memberContainer {
 	display: flex;
-	justify-content: start;
+	justify-content: flex-start;
 	align-items: center;
 	text-align: start;
 	margin: 20px 0px;

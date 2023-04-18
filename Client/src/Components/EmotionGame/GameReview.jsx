@@ -115,10 +115,10 @@ const GameReview = () => {
 							dimensions.margin.right,
 					}}
 				>
-					<div class="centerThing">
+					<div className="centerThing">
 						<div id="legend">
 							<span className="graphOptionsHeader">Legend</span>
-							<div class="optionItemsContainer">
+							<div className="optionItemsContainer">
 								{LINE_KEYS.map((key, index) => (
 									<div className="legendItem" key={key}>
 										<span
@@ -147,7 +147,7 @@ const GameReview = () => {
 							<span className="graphOptionsHeader">
 								Include in Graph
 							</span>
-							<div class="optionItemsContainer">
+							<div className="optionItemsContainer">
 								{showingLines.map((checked, index) => {
 									return (
 										<div

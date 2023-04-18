@@ -2,8 +2,10 @@ import * as d3 from "d3";
 import { useState } from "react";
 import { useEffect, useRef } from "react";
 
+import { getFormattedDate } from "../../Utils/dates";
+
 export const LINE_KEYS = ["Happy", "Sad", "Angry", "Neutral"];
-export const LINE_COLORS = ["#FF0000", "#00FF00", "#0000FF", "#808080"];
+export const LINE_COLORS = ["#56b19c", "#15125c", "#8400b8", "#4d2000"];
 
 const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 	const [lastShowing, setLastShowing] = useState([
@@ -12,7 +14,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 		false,
 		false,
 	]);
-
+	const lastClosestDate = useRef(new Date().getTime());
 	const svgRef = useRef(null);
 
 	const { width, height, margin = {} } = dimensions;
@@ -20,43 +22,56 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 	const svgHeight = height + margin.top + margin.bottom;
 
 	useEffect(() => {
-		console.log("Redrawing emotion graph");
 		const allEmotionData = [];
-		for (let i = 0; i < 4; i++) {
+		const allDates = [];
+
+		for (let i = 0; i < LINE_KEYS.length; i++) {
 			const emotionData = [];
 			allEmotionData[i] = emotionData;
 			if (!showingLines[i]) continue;
 
-			data.forEach((game, gameIndex) => {
+			for (let j = 0; j < data.length; j++) {
+				const game = data[j];
+				allDates[j] = game.GameFin;
+
 				emotionData.push({
-					gameIndex,
+					GameFin: game.GameFin,
 					CorrectPercent: game.CorrectPercent[i],
 					WrongPercent: game.WrongPercent[i],
 				});
-			});
+			}
 		}
 
+		/* Make the actual graph */
+
 		const xScale = d3
-			.scaleLinear()
-			.domain([0, data.length - 1])
+			.scaleTime()
+			.nice()
+			.domain(d3.extent(allDates))
 			.range([0, width]);
 
 		const yScale = d3.scaleLinear().domain([0, 100]).range([height, 0]);
 
 		// Create root container where we will append all other chart elements
 		const svgEl = d3.select(svgRef.current);
-		svgEl.selectAll("*").remove(); // Clear svg content before adding new elements
+
+		// Remove select elements, leaving tooltip and circle drawings so they don't spaz
+		svgEl.selectAll("*").remove();
+
 		svgEl.style("background", "#ffff").style("overflow", "visible");
 		const svg = svgEl
 			.append("g")
+			.attr("class", "emotionGraphContent")
 			.attr("transform", `translate(${margin.left},${margin.top})`);
 
 		// Add X grid lines with labels
 		const xAxis = d3
 			.axisBottom(xScale)
-			.ticks(width < 600 ? data.length / 2 : data.length)
+			.ticks(
+				width < 600 ? allEmotionData.length / 2 : allEmotionData.length
+			)
 			.tickSize(-height)
-			.tickFormat((val) => `${val + 1}`)
+			.tickFormat((date) => getFormattedDate(date))
 			.tickPadding(10);
 		const xAxisGroup = svg
 			.append("g")
@@ -88,14 +103,14 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 
 		// Add axis labels
 		svg.append("text")
-			.attr("class", "stats-graph-x")
+			.attr("class", "stats-graph")
 			.attr("text-anchor", "end")
-			.attr("x", width / 2 + 75)
+			.attr("x", width / 2 + 55)
 			.attr("y", height + 45)
-			.text("Game Instance");
+			.text("Game Date");
 
 		svg.append("text")
-			.attr("class", "stats-graph-y")
+			.attr("class", "stats-graph")
 			.attr("text-anchor", "start")
 			.attr("x", -45)
 			.attr("y", -30)
@@ -103,10 +118,9 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 
 		const line = d3
 			.line()
-			.x((d) => xScale(d.gameIndex))
+			.x((d) => xScale(d.GameFin))
 			.y((d) => yScale(d.CorrectPercent));
 
-		// .data takes in an array of arrays, each of which are the x/y values for each emotion
 		const lines = svg
 			.selectAll(".line")
 			.data(allEmotionData)
@@ -117,9 +131,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 			.attr("stroke-width", 3)
 			.attr("d", (d) => line(d));
 
-		console.log("" + lastShowing, "" + showingLines);
 		lines.each((_, index, nodes) => {
-			// TODO: This doesn't work yet
 			const element = nodes[index];
 			const length = element.getTotalLength();
 			if (!lastShowing[index] && showingLines[index]) {
@@ -127,13 +139,162 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 					.attr("stroke-dasharray", `${length},${length}`)
 					.attr("stroke-dashoffset", length)
 					.transition()
-					.duration(750)
+					.duration(500)
 					.ease(d3.easeLinear)
 					.attr("stroke-dashoffset", 0);
 			}
 		});
 
-		setLastShowing(showingLines);
+		setLastShowing([...showingLines]);
+
+		/* Manage tooltip and mouse events */
+		const rectOverlay = svg
+			.append("rect")
+			.attr("cursor", "move")
+			.attr("fill", "none")
+			.attr("pointer-events", "all")
+			.attr("width", width)
+			.attr("height", height)
+			.on("mousemove", focusMouseMove)
+			.on("mouseover", focusMouseOver)
+			.on("mouseout", focusMouseOut);
+
+		const mouseLine = svg
+			.append("path") // create vertical line to follow mouse
+			.attr("class", "mouse-line")
+			.attr("stroke", "#303030")
+			.attr("stroke-width", 2)
+			.attr("opacity", "0");
+
+		const tooltip = svg
+			.append("g")
+			.attr("class", "tooltip-wrapper")
+			.attr("display", "none");
+
+		const tooltipBackground = tooltip
+			.append("rect")
+			.attr("fill", "#e8e8e8");
+		const tooltipText = tooltip.append("text");
+
+		function focusMouseMove(event) {
+			tooltip.attr("display", null);
+			const mouse = d3.pointer(event);
+			const dateOnMouse = xScale.invert(mouse[0]);
+			const nearestDateIndex = d3.bisect(allDates, dateOnMouse);
+
+			// get the dates on either of the mouse cord
+			const d0 = allDates[nearestDateIndex - 1];
+			const d1 = allDates[nearestDateIndex];
+
+			let closestDate;
+			if (!d0 || d0 < xScale.domain()[0]) {
+				closestDate = d1;
+			} else if (d1 > xScale.domain()[1]) {
+				closestDate = d0;
+			} else {
+				// decide which date is closest to the mouse
+				closestDate = dateOnMouse - d0 > d1 - dateOnMouse ? d1 : d0;
+			}
+
+			const nearestDateYValues = {};
+			for (let i = 0; i < allDates.length; i++) {
+				let thisDate = allDates[i];
+				const yVals = [];
+				nearestDateYValues[thisDate] = yVals;
+				for (let j = 0; j < allEmotionData.length; j++)
+					yVals.push(
+						allEmotionData[i][j]
+							? allEmotionData[i][j].CorrectPercent
+							: undefined
+					);
+			}
+			const nearestDateXCord = xScale(closestDate);
+
+			if (lastClosestDate.current === closestDate.getTime()) return;
+			lastClosestDate.current = closestDate.getTime();
+
+			mouseLine
+				.attr("d", `M ${nearestDateXCord} 0 V ${height}`)
+				.attr("opacity", "1");
+
+			tooltipText.selectAll(".tooltip-text-line").remove();
+			svg.selectAll(".tooltip-line-circles").remove();
+
+			tooltipText
+				.append("tspan")
+				.attr("class", "tooltip-text-line")
+				.attr("x", "5")
+				.attr("y", "5")
+				.attr("dy", "13px")
+				.attr("font-weight", "bold")
+				.text(`${getFormattedDate(closestDate)}`);
+
+			for (
+				let emotionIndex = 0;
+				emotionIndex < LINE_KEYS.length;
+				emotionIndex++
+			) {
+				svg.append("circle")
+					.attr("class", "tooltip-line-circles")
+					.attr("r", 5)
+					.attr("fill", LINE_COLORS[emotionIndex])
+					.attr("cx", xScale(closestDate))
+					.attr(
+						"cy",
+						yScale(nearestDateYValues[closestDate][emotionIndex])
+					);
+
+				tooltipText
+					.append("tspan")
+					.attr("class", "tooltip-text-line")
+					.attr("x", "5")
+					.attr("dy", `14px`)
+					.attr("fill", LINE_COLORS[emotionIndex])
+					// TODO: This is very not correct
+					.text(
+						`${LINE_KEYS[emotionIndex]}: ${nearestDateYValues[
+							closestDate
+						][emotionIndex].toFixed(2)}%`
+					);
+			}
+
+			const tooltipWidth = tooltipText.node().getBBox().width;
+			const tooltipHeight = tooltipText.node().getBBox().height;
+			const rectOverlayWidth = rectOverlay.node().getBBox().width;
+			tooltipBackground
+				.attr("width", tooltipWidth + 10)
+				.attr("height", tooltipHeight + 10);
+			if (nearestDateXCord + tooltipWidth >= rectOverlayWidth) {
+				tooltip.attr(
+					"transform",
+					"translate(" +
+						(nearestDateXCord - tooltipWidth - 20) +
+						"," +
+						mouse[1] +
+						")"
+				);
+			} else {
+				tooltip.attr(
+					"transform",
+					"translate(" +
+						(nearestDateXCord + 10) +
+						"," +
+						mouse[1] +
+						")"
+				);
+			}
+		}
+
+		function focusMouseOver() {
+			mouseLine.attr("opacity", "1");
+			tooltip.attr("display", null);
+		}
+
+		function focusMouseOut() {
+			mouseLine.attr("opacity", "0");
+			tooltip.attr("display", "none");
+			svg.selectAll(".tooltip-line-circles").remove();
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data, dimensions, showingLines]);
 

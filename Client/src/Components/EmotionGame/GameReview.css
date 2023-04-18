@@ -2,8 +2,7 @@
 	margin-top: 30px;
 }
 
-.stats-graph-x,
-.stats-graph-y {
+.stats-graph {
 	font-weight: bold;
 	font-size: 1.2em;
 }
@@ -16,7 +15,7 @@
 .optionItemsContainer {
 	display: flex;
 	flex-direction: column;
-	align-items: start;
+	align-items: flex-start;
 }
 
 #graphOptionsContainer {
