@@ -38,9 +38,14 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 					GameFin: game.GameFin,
 					CorrectPercent: game.CorrectPercent[i],
 					WrongPercent: game.WrongPercent[i],
+					Correct: game.Correct[i],
+					Wrong: game.Wrong[i],
+					Total: game.Correct[i] + game.Wrong[i],
 				});
 			}
 		}
+
+		console.log(allEmotionData);
 
 		/* Make the actual graph */
 
@@ -211,6 +216,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 					);
 			}
 			const nearestDateXCord = xScale(closestDate);
+			const closestDateGameIndex = allDates.indexOf(closestDate);
 
 			if (lastClosestDate.current === closestDate.getTime()) return;
 			lastClosestDate.current = closestDate.getTime();
@@ -254,17 +260,34 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 						yScale(nearestDateYValues[closestDate][emotionIndex])
 					);
 
+				const emotionDataForGame =
+					allEmotionData[emotionIndex][closestDateGameIndex];
+				console.log(emotionDataForGame);
+				const amountText = `${emotionDataForGame.CorrectPercent.toFixed(
+					2
+				)}% (${emotionDataForGame.Correct}/${
+					emotionDataForGame.Total
+				})`;
+
+				// for (let i = 0; i < allDates.length; i++) {
+				// 	let thisDate = allDates[i];
+				// 	const yVals = [];
+				// 	nearestDateYValues[thisDate] = yVals;
+				// 	for (let j = 0; j < allEmotionData.length; j++)
+				// 		yVals.push(
+				// 			allEmotionData[j][i]
+				// 				? allEmotionData[j][i].CorrectPercent
+				// 				: undefined
+				// 		);
+				// }
+
 				tooltipText
 					.append("tspan")
 					.attr("class", "tooltip-text-line")
 					.attr("x", "5")
 					.attr("dy", "20px")
 					.attr("fill", LINE_COLORS[emotionIndex])
-					.text(
-						`${LINE_KEYS[emotionIndex]}: ${nearestDateYValues[
-							closestDate
-						][emotionIndex].toFixed(2)}%`
-					);
+					.text(`${LINE_KEYS[emotionIndex]}: ${amountText}`);
 			}
 
 			const tooltipWidth = tooltipText.node().getBBox().width;

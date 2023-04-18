@@ -61,14 +61,14 @@ const GameReview = () => {
 					return {
 						...game,
 						GameFin: new Date(GameFin),
-						CorrectPercent: Correct.map(
-							(val, index) =>
-								(val / (Correct[index] + Wrong[index])) * 100
-						),
-						WrongPercent: Wrong.map(
-							(val, index) =>
-								(val / (Correct[index] + Wrong[index])) * 100
-						),
+						CorrectPercent: Correct.map((val, index) => {
+							const total = Correct[index] + Wrong[index];
+							return total > 0 ? (val / total) * 100 : 0;
+						}),
+						WrongPercent: Wrong.map((val, index) => {
+							const total = Correct[index] + Wrong[index];
+							return total > 0 ? (val / total) * 100 : 0;
+						}),
 					};
 				});
 
