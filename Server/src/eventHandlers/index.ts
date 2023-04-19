@@ -1,8 +1,7 @@
-import type { Server, Socket } from "socket.io";
+import type { Server } from "socket.io";
 import constants from "../utils/constants";
-import { EmotionGameAction, EmotionGameStats } from "../utils/types";
+import { EmotionGameAction, GSRStringData } from "../utils/types";
 import EmotionRecognition from "../models/EmotionRecognition";
-import requireJwtAuth from "../middleware/requireJwtAuth";
 import passport from "passport";
 
 /** Register socket.io event handlers
@@ -151,9 +150,9 @@ export default (io: Server) => {
 			});
 		});
 
-		socket.on("GSR", (gsrValue: number, ts: string) => {
-			// console.log("Forwarding GSR ", {gsrValue, ts})
-			io.emit("GSR", gsrValue, ts);
+		socket.on("GSR", (gsrString: string) => {
+			const data: GSRStringData = JSON.parse(gsrString);
+			socket.emit("GSR", data.value, data.ts);
 		});
 
 		socket.on("disconnecting", (reason) => {

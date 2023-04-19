@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 console.log("Attempting to connect");
 
 const TOKEN =
-	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDM3MzUzNGUzZDBiZDBlMDIwMDY3N2IiLCJqdGkiOiI3YWEzYmYyZC04NThlLTQ2NzYtODAxOC0xN2FiZWM5NjMwOGIiLCJpYXQiOjE2ODE4NDg2MzQsImV4cCI6MTY4MTg5MTgzNH0.DMt0ruE32_6nx1FAVml-2j1KQ0IiLZCck5sToZgwwH8";
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDM3MzUzNGUzZDBiZDBlMDIwMDY3N2IiLCJqdGkiOiJmZDRhOGRjYS1jNjZhLTQ2M2YtYjVjNi0xYjIyYjc4NTY0MTMiLCJpYXQiOjE2ODE5MjU4MjYsImV4cCI6MTY4MTk2OTAyNn0.7KGTuqgk3CZWQdJXUNZtZ5izZXzOHtMp57lKRydgdfc";
 const USERID = "64373534e3d0bd0e0200677b";
 
 // @ts-ignore
@@ -28,13 +28,9 @@ socket.on("connect", () => {
 	setInterval(() => {
 		// console.log("Sending!");
 		last = getNextVal(last);
-		socket.emit("GSR", last, new Date());
+		socket.emit("GSR", JSON.stringify({ value: last, ts: new Date() }));
 	}, 71);
 });
-
-// socket.on("GSR", (value, ts) => {
-// 	console.log(value + " - " + ts);
-// });
 
 socket.on("disconnect", () => {
 	console.log("disconnected!");

@@ -12,17 +12,32 @@ function validUser(userData) {
 	);
 }
 
-async function saveUser(userData) {
+function saveUser(userData) {
 	if (validUser(userData)) {
 		localStorage.setItem("id", userData.id);
 		localStorage.setItem("token", userData.token);
+		localStorage.setItem(
+			"tokenExpiry",
+			"" + (new Date().getTime() + 1000 * 60 * 60 * 12)
+		);
 	}
 }
 
-async function getUser() {
+function clearUser() {
+	localStorage.setItem("id", "");
+	localStorage.setItem("token", "");
+	localStorage.setItem("tokenExpiry", "");
+}
+
+function getUser() {
 	const id = localStorage.getItem("id");
 	const token = localStorage.getItem("token");
+	const expiry = localStorage.getItem("tokenExpiry");
 	if (!id || !token) return null;
+	if (expiry <= new Date().getTime()) {
+		clearUser();
+		return null;
+	}
 	return {
 		id,
 		token,
@@ -49,7 +64,7 @@ export const AuthProvider = ({ children }) => {
 				const data = await res.json();
 				const userData = { token: data.token, id: data.id };
 				setUser(userData);
-				await saveUser(userData);
+				saveUser(userData);
 				return "";
 			}
 		} catch (err) {
@@ -98,7 +113,7 @@ export const AuthProvider = ({ children }) => {
 
 			if (res.status === 200) {
 				setUser(null);
-				await saveUser({ id: "", token: "" });
+				clearUser();
 				return "";
 			}
 		} catch (err) {
@@ -130,11 +145,9 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	useEffect(() => {
-		getUser().then((userData) => {
-			setUser(userData);
-			if (userData) navigate("/dashboard");
-		});
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		const userData = getUser();
+		setUser(userData);
+		if (userData) navigate("/dashboard");
 	}, []);
 
 	return (
