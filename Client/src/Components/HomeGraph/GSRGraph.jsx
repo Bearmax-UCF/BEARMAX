@@ -73,6 +73,7 @@ export const GSRGraph = ({
 				maxValRef.current = 0;
 
 				newSocket.on("GSR", (value, ts) => {
+					console.log(value, ts);
 					dataRef.current.push({
 						value,
 						ts: new Date(ts),

@@ -152,6 +152,7 @@ export default (io: Server) => {
 
 		socket.on("GSR", (gsrString: string) => {
 			const data: GSRStringData = JSON.parse(gsrString);
+			console.log(data);
 			socket.emit("GSR", data.value, data.ts);
 		});
 

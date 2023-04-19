@@ -3,11 +3,11 @@ import { io } from "socket.io-client";
 console.log("Attempting to connect");
 
 const TOKEN =
-	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDM3MzUzNGUzZDBiZDBlMDIwMDY3N2IiLCJqdGkiOiJmZDRhOGRjYS1jNjZhLTQ2M2YtYjVjNi0xYjIyYjc4NTY0MTMiLCJpYXQiOjE2ODE5MjU4MjYsImV4cCI6MTY4MTk2OTAyNn0.7KGTuqgk3CZWQdJXUNZtZ5izZXzOHtMp57lKRydgdfc";
-const USERID = "64373534e3d0bd0e0200677b";
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDM3MDc1ZmY2MjQ4MjgzMDJlZTMwNjciLCJqdGkiOiI0YWY0ZDk0ZS01YWVkLTRkMzItYTQyNy1jYTU1ZjIwZTNmOTkiLCJpYXQiOjE2ODE5MjY2OTksImV4cCI6MTY4MTk2OTg5OX0.bjL-tptKMTK8i8ag7nxVz2NWpgDf3knQOuYqbK21Jc8";
+const USERID = "6437075ff624828302ee3067";
 
 // @ts-ignore
-const socket = io("http://localhost:8080", {
+const socket = io("https://carewithbearmax.com", {
 	query: {
 		userID: USERID,
 	},
