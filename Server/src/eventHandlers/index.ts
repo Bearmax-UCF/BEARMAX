@@ -152,7 +152,8 @@ export default (io: Server) => {
 		});
 
 		socket.on("GSR", (gsrValue: number, ts: string) => {
-			socket.emit("GSR", gsrValue, ts);
+			// console.log("Forwarding GSR ", {gsrValue, ts})
+			io.emit("GSR", gsrValue, ts);
 		});
 
 		socket.on("disconnecting", (reason) => {

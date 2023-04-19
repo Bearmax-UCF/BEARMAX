@@ -17,18 +17,19 @@ const socket = io("http://localhost:8080", {
 });
 
 const getNextVal = (lastVal: number) => {
-	const newVal = Math.max(0, Math.random() * 50 - 25 + lastVal);
+	const newVal = Math.max(0, Math.random() * 10 - 5 + lastVal);
 	return newVal;
 };
 
 socket.on("connect", () => {
 	console.log("Client connected!");
 
-	let last = 3000;
+	let last = 450;
 	setInterval(() => {
+		// console.log("Sending!");
 		last = getNextVal(last);
 		socket.emit("GSR", last, new Date());
-	}, 200);
+	}, 71);
 });
 
 // socket.on("GSR", (value, ts) => {

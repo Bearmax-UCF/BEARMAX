@@ -7,7 +7,11 @@ import { Server } from "socket.io";
 import constants from "./utils/constants";
 
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+	cors: {
+		origin: "http://localhost:3000",
+	},
+});
 
 import setupAuthSvc from "./services/auth";
 import registerHandlers from "./eventHandlers";
