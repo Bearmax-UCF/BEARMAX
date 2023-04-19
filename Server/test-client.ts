@@ -7,6 +7,8 @@ carewithbearmax.com
 const TOKEN =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDM3MDc1ZmY2MjQ4MjgzMDJlZTMwNjciLCJqdGkiOiI0YWY0ZDk0ZS01YWVkLTRkMzItYTQyNy1jYTU1ZjIwZTNmOTkiLCJpYXQiOjE2ODE5MjY2OTksImV4cCI6MTY4MTk2OTg5OX0.bjL-tptKMTK8i8ag7nxVz2NWpgDf3knQOuYqbK21Jc8";
 const USERID = "6437075ff624828302ee3067";
+// const URL = "https://carewithbearmax.com";
+const URL = "http://localhost:8080";
 */
 
 /*
@@ -15,9 +17,10 @@ dev
 const TOKEN =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDM3MzUzNGUzZDBiZDBlMDIwMDY3N2IiLCJqdGkiOiJlMTgwNWY3MS1jNjM3LTQ3NzUtYmM5Zi0xZTdhM2IxNWEwNWIiLCJpYXQiOjE2ODE5Mjg1NTMsImV4cCI6MTY4MTk3MTc1M30.T7HaQtybROln8mYtghY0FIruxMw0mIJ-G99OAGD-p3g";
 const USERID = "64373534e3d0bd0e0200677b";
+const URL = "http://localhost:8080";
 
 // @ts-ignore
-const socket = io("http://localhost:8080", {
+const socket = io(URL, {
 	query: {
 		userID: USERID,
 	},
