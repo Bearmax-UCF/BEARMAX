@@ -45,15 +45,6 @@
 
 /* Graph */
 
-#graphTitle {
-	font-size: 1.8em;
-}
-
-#recordGSRButton {
-	margin: auto;
-	margin-top: 15px;
-}
-
 .dashButton {
 	display: block;
 	background-color: #2e3138;

@@ -266,18 +266,6 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 					emotionDataForGame.Total
 				})`;
 
-				// for (let i = 0; i < allDates.length; i++) {
-				// 	let thisDate = allDates[i];
-				// 	const yVals = [];
-				// 	nearestDateYValues[thisDate] = yVals;
-				// 	for (let j = 0; j < allEmotionData.length; j++)
-				// 		yVals.push(
-				// 			allEmotionData[j][i]
-				// 				? allEmotionData[j][i].CorrectPercent
-				// 				: undefined
-				// 		);
-				// }
-
 				tooltipText
 					.append("tspan")
 					.attr("class", "tooltip-text-line")

@@ -1,0 +1,22 @@
+#graphTitle {
+	font-size: 1.8em;
+}
+
+#gsrOptionRow {
+	display: flex;
+	justify-content: space-between;
+	padding-top: 15px;
+}
+
+#gsrCheckContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	background-color: white;
+	padding: 5px;
+}
+
+.gsrOptionLabel {
+	font-size: 1.2em;
+	padding-left: 5px;
+}

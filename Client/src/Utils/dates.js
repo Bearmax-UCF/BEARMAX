@@ -49,3 +49,20 @@ export function getFormattedTime(date) {
 		formattedMilli
 	);
 }
+
+export function getFileName(date) {
+	if (typeof date === "string") return date;
+
+	const year = date.getFullYear();
+
+	let month = (1 + date.getMonth()).toString();
+	month = month.length > 1 ? month : "0" + month;
+
+	let day = date.getDate().toString();
+	day = day.length > 1 ? day : "0" + day;
+
+	const dateString = month + "-" + day + "-" + year;
+	const timeString = getFormattedTime(date).replace(/:/g, "-");
+
+	return dateString + "_" + timeString;
+}
