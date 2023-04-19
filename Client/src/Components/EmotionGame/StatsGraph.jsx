@@ -22,25 +22,32 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 	const svgHeight = height + margin.top + margin.bottom;
 
 	useEffect(() => {
-		const allEmotionData = [];
-		const allDates = [];
+		const allEmotionData = []; // Data for each emotion specifically
+		const allDates = []; // The GameFin for the game at each index in data
 
-		for (let i = 0; i < LINE_KEYS.length; i++) {
+		// Parse data into separate arrays for each emotion
+		for (
+			let emotionIndex = 0;
+			emotionIndex < LINE_KEYS.length;
+			emotionIndex++
+		) {
 			const emotionData = [];
-			allEmotionData[i] = emotionData;
-			if (!showingLines[i]) continue;
+			allEmotionData[emotionIndex] = emotionData;
+			if (!showingLines[emotionIndex]) continue; // Leave empty if line is not to be drawn
 
-			for (let j = 0; j < data.length; j++) {
-				const game = data[j];
-				allDates[j] = game.GameFin;
+			for (let gameIndex = 0; gameIndex < data.length; gameIndex++) {
+				const game = data[gameIndex];
+				allDates[gameIndex] = game.GameFin;
 
+				// Push data for this emotion at this game instance
 				emotionData.push({
 					GameFin: game.GameFin,
-					CorrectPercent: game.CorrectPercent[i],
-					WrongPercent: game.WrongPercent[i],
-					Correct: game.Correct[i],
-					Wrong: game.Wrong[i],
-					Total: game.Correct[i] + game.Wrong[i],
+					CorrectPercent: game.CorrectPercent[emotionIndex],
+					WrongPercent: game.WrongPercent[emotionIndex],
+					Correct: game.Correct[emotionIndex],
+					Wrong: game.Wrong[emotionIndex],
+					Total:
+						game.Correct[emotionIndex] + game.Wrong[emotionIndex],
 				});
 			}
 		}
@@ -118,6 +125,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 			.attr("y", -30)
 			.text("Percent Correct");
 
+		// Draw the lines
 		const line = d3
 			.line()
 			.x((d) => xScale(d.GameFin))
@@ -133,9 +141,11 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 			.attr("stroke-width", 3)
 			.attr("d", (d) => line(d));
 
+		// Animate drawing of lines turned on
 		lines.each((_, index, nodes) => {
 			const element = nodes[index];
 			const length = element.getTotalLength();
+			// If line wasn't showing last redraw, animate it
 			if (!lastShowing[index] && showingLines[index]) {
 				d3.select(element)
 					.attr("stroke-dasharray", `${length},${length}`)
@@ -150,6 +160,8 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 		setLastShowing([...showingLines]);
 
 		/* Manage tooltip and mouse events */
+
+		// Invisible overlay to handle mouse events
 		const rectOverlay = svg
 			.append("rect")
 			.attr("cursor", "move")
@@ -157,10 +169,11 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 			.attr("pointer-events", "all")
 			.attr("width", width)
 			.attr("height", height)
-			.on("mousemove", focusMouseMove)
-			.on("mouseover", focusMouseOver)
-			.on("mouseout", focusMouseOut);
+			.on("mousemove", onMouseMove)
+			.on("mouseover", onMouseOver)
+			.on("mouseout", onMouseOut);
 
+		// Line from top to bottom of graph at highlighted X
 		const mouseLine = svg
 			.append("path")
 			.attr("class", "mouse-line")
@@ -168,6 +181,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 			.attr("stroke-width", 2)
 			.attr("opacity", "0");
 
+		// Popup tooltip base
 		const tooltip = svg
 			.append("g")
 			.attr("class", "tooltip-wrapper")
@@ -179,18 +193,21 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 			.attr("fill", "#e8e8e8");
 		const tooltipText = tooltip.append("text");
 
-		function focusMouseMove(event) {
+		// Redraw inspect elements when we move the mouse on the graph
+		function onMouseMove(event) {
 			if (data.length === 0) return;
 
 			tooltip.attr("display", null);
 			const mouse = d3.pointer(event);
+			// Get the date of the x coordinate of the mouse
 			const dateOnMouse = xScale.invert(mouse[0]);
+			// Figure out where it would fit into array of game dates
 			const nearestDateIndex = d3.bisect(allDates, dateOnMouse);
 
-			// get the dates on either of the mouse cord
 			const d0 = allDates[nearestDateIndex - 1];
 			const d1 = allDates[nearestDateIndex];
 
+			// Get closest actual game date to where the mouse is positioned
 			let closestDate;
 			if (!d0 || d0 < xScale.domain()[0]) {
 				closestDate = d1;
@@ -201,6 +218,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 				closestDate = dateOnMouse - d0 > d1 - dateOnMouse ? d1 : d0;
 			}
 
+			// Insert the y values for each emotion at every date
 			const nearestDateYValues = {};
 			for (let i = 0; i < allDates.length; i++) {
 				let thisDate = allDates[i];
@@ -213,19 +231,24 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 							: undefined
 					);
 			}
+
+			// Setup tooltip base
 			const nearestDateXCord = xScale(closestDate);
 			const closestDateGameIndex = allDates.indexOf(closestDate);
 
 			if (lastClosestDate.current === closestDate.getTime()) return;
 			lastClosestDate.current = closestDate.getTime();
 
+			// Draw mouse line
 			mouseLine
 				.attr("d", `M ${nearestDateXCord} 0 V ${height}`)
 				.attr("opacity", "1");
 
+			// Clear last tooltip
 			tooltipText.selectAll(".tooltip-text-line").remove();
 			svg.selectAll(".tooltip-line-circles").remove();
 
+			// Tooltip header
 			tooltipText
 				.append("tspan")
 				.attr("class", "tooltip-text-line")
@@ -235,6 +258,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 				.attr("font-weight", "bold")
 				.text(`${getFormattedDate(closestDate)}`);
 
+			// Adds space between header and the main content
 			tooltipText
 				.append("tspan")
 				.attr("class", "tooltip-text-line")
@@ -248,6 +272,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 				emotionIndex < LINE_KEYS.length;
 				emotionIndex++
 			) {
+				// Draw a circle at the x coord of each line
 				svg.append("circle")
 					.attr("class", "tooltip-line-circles")
 					.attr("r", 5)
@@ -258,6 +283,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 						yScale(nearestDateYValues[closestDate][emotionIndex])
 					);
 
+				// Write a line in the tooltip with stats for this emotion at this date
 				const emotionDataForGame =
 					allEmotionData[emotionIndex][closestDateGameIndex];
 				const amountText = `${emotionDataForGame.CorrectPercent.toFixed(
@@ -275,12 +301,15 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 					.text(`${LINE_KEYS[emotionIndex]}: ${amountText}`);
 			}
 
+			// Position tooltip near mouse
 			const tooltipWidth = tooltipText.node().getBBox().width;
 			const tooltipHeight = tooltipText.node().getBBox().height;
 			const rectOverlayWidth = rectOverlay.node().getBBox().width;
 			tooltipBackground
 				.attr("width", tooltipWidth + 10)
 				.attr("height", tooltipHeight + 20);
+
+			// Flip which side of the mouse it appears if it would extend past the svg width
 			if (nearestDateXCord + tooltipWidth >= rectOverlayWidth) {
 				tooltip.attr(
 					"transform",
@@ -302,12 +331,13 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 			}
 		}
 
-		function focusMouseOver() {
+		// Turn tooltip on and off
+		function onMouseOver() {
 			mouseLine.attr("opacity", "1");
 			tooltip.attr("display", null);
 		}
 
-		function focusMouseOut() {
+		function onMouseOut() {
 			mouseLine.attr("opacity", "0");
 			tooltip.attr("display", "none");
 			svg.selectAll(".tooltip-line-circles").remove();

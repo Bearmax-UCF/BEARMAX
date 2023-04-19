@@ -144,7 +144,6 @@ export const AuthProvider = ({ children }) => {
 		return null;
 	};
 
-	// TODO: Check with /me if authorized, only if so set the User (otherwise clear)
 	useEffect(() => {
 		const userData = getUser();
 		setUser(userData);

@@ -111,6 +111,7 @@ export const NotesLayout = () => {
 		}
 	};
 
+	// Update changes made to active note to the drawer
 	const updateActiveNoteInDrawer = () => {
 		for (let i = 0; i < allNotes.length; i++) {
 			let currentNote = allNotes[i];
@@ -122,6 +123,7 @@ export const NotesLayout = () => {
 		setAllNotes([...allNotes]);
 	};
 
+	// Saves the active note and swaps another to active
 	const changeToNote = async (newNote) => {
 		let notes = allNotes;
 		if (activeNote && saveStatus !== "Saved!") {
@@ -133,6 +135,7 @@ export const NotesLayout = () => {
 		});
 	};
 
+	// If we're refreshed notes from the server, update active note to use server version with any changes pulled
 	const updateActiveNote = (providedNotes) => {
 		const from = providedNotes ?? allNotes;
 		if (!activeNote) {
@@ -144,10 +147,12 @@ export const NotesLayout = () => {
 		}
 	};
 
+    // Grab all notes and select first at page load
 	useEffect(() => {
 		getAllNotes().then((notes) => updateActiveNote(notes));
 	}, []);
 
+    // Save active note after no changes have been made in X seconds
 	useEffect(() => {
 		if (!activeNote) {
 			setSaveStatus("No selection");
@@ -155,7 +160,6 @@ export const NotesLayout = () => {
 		}
 
 		setSaveStatus("Saving...");
-		// Save note after no changes made for 2 second
 		const updater = setTimeout(async () => {
 			await saveNote();
 			setSaveStatus("Saved!");

@@ -21,6 +21,9 @@ export const GSRGraph = ({
 	const maxValRef = useRef(0);
 	const lastMouseCoordsRef = useRef(null);
 
+	// Recalculate dimensions when the window is resized so svg can redraw to new size
+	// This looks dump and unnecessary, but because we repaint on an interval this is required
+	// For the repaint to be able to get the current dimensions if the window has been resized since it started.
 	const dimensionsRef = useRef(null);
 	dimensionsRef.current = useMemo(
 		() => ({
@@ -36,14 +39,14 @@ export const GSRGraph = ({
 		[windowHeight, windowWidth]
 	);
 
-	const repaintIntervalRef = useRef(null);
+	// Keep save options up to date so when socket callback fires, we can have whatever is currently selected
 	const saveOptionsRef = useRef(saveOptions);
 
 	useEffect(() => {
 		saveOptionsRef.current = saveOptions;
-		console.log("Updating save options.");
 	}, [saveOptions]);
 
+	// Save recorded data to a file
 	const downloadGSR = () => {
 		const element = document.createElement("a");
 		let content = dataRef.current.reduce((prev, curr) => {
@@ -61,6 +64,7 @@ export const GSRGraph = ({
 	};
 
 	useEffect(() => {
+		// If we're NOW recording, start listening for GSR data
 		if (recording) {
 			const newSocket = io(buildPath("/"), {
 				query: {
@@ -74,6 +78,7 @@ export const GSRGraph = ({
 			newSocket.on("connect", () => {
 				console.log("Successfully connected to the server!");
 
+				// Remove data from previous recording so SVG clears lines
 				dataRef.current = [];
 				allTimesRef.current = [];
 				maxValRef.current = 0;
@@ -92,18 +97,18 @@ export const GSRGraph = ({
 				console.log("Disconnected from server.")
 			);
 
-			repaintIntervalRef.current = setInterval(redraw, 100);
+			const redrawInt = setInterval(redraw, 100);
 
 			return () => {
-				const data = dataRef.current;
-				const bodyData = { GSRData: [], GSRTime: [] };
-
-				for (let dataPoint of data) {
-					bodyData.GSRData.push(dataPoint.value);
-					bodyData.GSRTime.push(dataPoint.ts);
-				}
-
+				// Cleanup socket and save data
 				if (saveOptionsRef.current.db) {
+					const data = dataRef.current;
+					const bodyData = { GSRData: [], GSRTime: [] };
+					for (let dataPoint of data) {
+						bodyData.GSRData.push(dataPoint.value);
+						bodyData.GSRTime.push(dataPoint.ts);
+					}
+
 					// Save recording to database
 					fetch(buildPath("/api/gsr/"), {
 						method: "POST",
@@ -127,16 +132,18 @@ export const GSRGraph = ({
 						.catch((err) => console.error(err));
 					setRecordingStart(null);
 				}
+
 				if (saveOptionsRef.current.file) downloadGSR();
 
 				newSocket.close();
-				clearInterval(repaintIntervalRef.current);
+				clearInterval(redrawInt);
 			};
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [recording]);
 
 	const redraw = () => {
+		// Get up-to-date data and svg dimensions
 		const data = dataRef.current;
 		const { width, height, margin } = dimensionsRef.current;
 
@@ -216,12 +223,12 @@ export const GSRGraph = ({
 			.attr("y", -30)
 			.text("GSR Reading");
 
+		// Draw the line
 		const line = d3
 			.line()
 			.x((d) => xScale(d.ts))
 			.y((d) => yScale(d.value));
 
-		// Add the line
 		svg.append("path")
 			.datum(data)
 			.attr("fill", "none")
@@ -229,7 +236,9 @@ export const GSRGraph = ({
 			.attr("stroke-width", 1.5)
 			.attr("d", (d) => line(d));
 
-		/* Manage tooltip and mouse events if not recording*/
+		/* Manage tooltip and mouse events */
+
+		// Draw invisible overlay to handle mouse events
 		const rectOverlay = svg
 			.append("rect")
 			.attr("cursor", "move")
@@ -237,17 +246,11 @@ export const GSRGraph = ({
 			.attr("pointer-events", "all")
 			.attr("width", width)
 			.attr("height", height)
-			.on("mousemove", focusMouseMove)
-			.on("mouseover", focusMouseOver)
-			.on("mouseout", focusMouseOut);
+			.on("mousemove", paintInspectElements)
+			.on("mouseover", onMouseOver)
+			.on("mouseout", onMouseOut);
 
-		const mouseLine = svg
-			.append("path")
-			.attr("class", "mouse-line")
-			.attr("stroke", "#303030")
-			.attr("stroke-width", 2)
-			.attr("opacity", "0");
-
+		// Set up tooltip
 		const tooltip = svg
 			.append("g")
 			.attr("class", "tooltip-wrapper")
@@ -259,14 +262,17 @@ export const GSRGraph = ({
 			.attr("fill", "#e8e8e8");
 		const tooltipText = tooltip.append("text");
 
-		if (lastMouseCoordsRef.current) focusMouseMove();
+		// If we the mouse is on the page, repaint the tooltip (regardless of whether mousemove triggers)
+		if (lastMouseCoordsRef.current) paintInspectElements();
 
-		function focusMouseMove(event) {
+		function paintInspectElements(event) {
 			if (data.length === 0) return;
 			const allTimes = allTimesRef.current;
 
 			tooltip.attr("display", null);
 
+			// If triggered by mousemove, get mouse coordinates
+			// If triggered by standard repaint, use the coords where the mouse was and still is
 			let mouseCoords = [];
 			if (event) mouseCoords = d3.pointer(event);
 			else mouseCoords = lastMouseCoordsRef.current;
@@ -276,20 +282,20 @@ export const GSRGraph = ({
 			const timeOnMouse = xScale.invert(mouseCoords[0]);
 			const nearestTimeIndex = d3.bisect(allTimes, timeOnMouse);
 
-			// get the dates on either of the mouse cord
 			const d0 = allTimes[nearestTimeIndex - 1];
 			const d1 = allTimes[nearestTimeIndex];
 
+			// Find the closest actual time with a data point to the mouse
 			let closestTime;
 			if (!d0 || d0 < xScale.domain()[0]) {
 				closestTime = d1;
 			} else if (d1 > xScale.domain()[1]) {
 				closestTime = d0;
 			} else {
-				// decide which date is closest to the mouse
 				closestTime = timeOnMouse - d0 > d1 - timeOnMouse ? d1 : d0;
 			}
 
+			// Get data about the closest data point
 			const closestTimeXCoord = xScale(closestTime);
 			const closestTimeIndex = allTimes.indexOf(closestTime);
 			const closestTimeVal = data[closestTimeIndex].value;
@@ -297,6 +303,7 @@ export const GSRGraph = ({
 			tooltipText.selectAll(".tooltip-text-line").remove();
 			svg.selectAll(".tooltip-line-circles").remove();
 
+			// Draw dot on the line at the data point
 			svg.append("circle")
 				.attr("class", "tooltip-line-circles")
 				.attr("r", 5)
@@ -304,6 +311,7 @@ export const GSRGraph = ({
 				.attr("cx", xScale(closestTime))
 				.attr("cy", yScale(closestTimeVal));
 
+			// Create tooltip showing timestamp and value of data point
 			tooltipText
 				.append("tspan")
 				.attr("class", "tooltip-text-line")
@@ -320,6 +328,7 @@ export const GSRGraph = ({
 				.attr("fill", "#000000")
 				.text(`Value: ${closestTimeVal.toFixed(2)}`);
 
+			// Move tooltip to mouse location
 			const tooltipWidth = tooltipText.node().getBBox().width;
 			const tooltipHeight = tooltipText.node().getBBox().height;
 			const rectOverlayWidth = rectOverlay.node().getBBox().width;
@@ -348,13 +357,12 @@ export const GSRGraph = ({
 			}
 		}
 
-		function focusMouseOver() {
-			mouseLine.attr("opacity", "1");
+		// Enable or disable inspect elements if mouse is on/off the graph
+		function onMouseOver() {
 			tooltip.attr("display", null);
 		}
 
-		function focusMouseOut() {
-			mouseLine.attr("opacity", "0");
+		function onMouseOut() {
 			tooltip.attr("display", "none");
 			svg.selectAll(".tooltip-line-circles").remove();
 			lastMouseCoordsRef.current = null;

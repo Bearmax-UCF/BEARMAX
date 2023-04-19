@@ -4,14 +4,6 @@ Correct/Wrong Index Correlations:
 1: Sad
 2: Angry
 3: Neutral
-
-{
-    Correct: Array,
-    Wrong: Array,
-	NumPlays: Number,
-    GameFin: Date,
-    UserID: String
-},
 */
 
 import { useContext, useEffect, useState } from "react";
@@ -89,7 +81,6 @@ const GameReview = () => {
 
 	return (
 		<div id="gameReviewContainer">
-			{/* TODO: Display some helpful message that's different if there's no data yet */}
 			<StatsGraph
 				data={allGames}
 				dimensions={dimensions}
