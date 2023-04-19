@@ -25,3 +25,27 @@ export function getFormattedDate(date) {
 
 	return dateString + ", " + timeString;
 }
+
+export function getFormattedTime(date) {
+	if (typeof date === "string") return date;
+
+	let hour = date.getHours();
+	const formattedHour = (hour < 10 ? "0" : "") + hour;
+	let minute = date.getMinutes();
+	const formattedMinute = (minute < 10 ? "0" : "") + minute;
+	let second = date.getSeconds();
+	const formattedSecond = (second < 10 ? "0" : "") + second;
+	const milli = date.getMilliseconds();
+	let formattedMilli = milli + "";
+	while (milli.length < 4) formattedMilli = "0" + formattedMilli;
+
+	return (
+		formattedHour +
+		":" +
+		formattedMinute +
+		":" +
+		formattedSecond +
+		"." +
+		formattedMilli
+	);
+}

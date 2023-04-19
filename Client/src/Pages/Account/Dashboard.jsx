@@ -1,9 +1,7 @@
 import React, { useContext, useState } from "react";
-
 import { AuthContext } from "../../AuthContext";
 import { buildPath } from "../../Components/BuildPath";
-
-import Graph from "../../Components/HomeGraph/graph";
+import { GraphWrapper } from "../../Components/HomeGraph/GraphWrapper";
 
 export const Dashboard = () => {
 	const [error, setError] = useState("");
@@ -49,7 +47,7 @@ export const Dashboard = () => {
 
 	return (
 		<div id="dashContainer">
-			<Graph />
+			<GraphWrapper />
 
 			<div id="dashNoteContainer">
 				<input

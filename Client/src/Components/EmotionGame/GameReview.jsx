@@ -21,17 +21,6 @@ import "./GameReview.css";
 import StatsGraph, { LINE_COLORS, LINE_KEYS } from "./StatsGraph";
 import useWindowDimensions from "../WindowDimensions";
 
-/*
-I need:
-- Load all stats into a multi line-chart that:
-    - When hovered, shows the individual date at nearest X, 
-          puts the dot on each line at that X, and displays
-        the percentage correct for each emotion in a popup key
-- Dropdown to show which lines (checkboxes)
-    - Also include a line eventually for total plays
-- Option to delete certain records that were accidentally created (very distance stretch goal)
-*/
-
 const lineLabels = ["Happy", "Sad", "Angry", "Neutral"];
 
 const GameReview = () => {
@@ -137,10 +126,6 @@ const GameReview = () => {
 							</div>
 						</div>
 					</div>
-
-					{/* <div className="activeDataContainer">
-						<span className="graphOptionsHeader">Hovered Game</span>
-					</div> */}
 
 					<div className="centerThing">
 						<div id="showLinesContainer">

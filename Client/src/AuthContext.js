@@ -134,6 +134,7 @@ export const AuthProvider = ({ children }) => {
 			setUser(userData);
 			if (userData) navigate("/dashboard");
 		});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

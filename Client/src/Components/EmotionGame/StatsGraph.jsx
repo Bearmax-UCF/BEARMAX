@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import { useState } from "react";
 import { useEffect, useRef } from "react";
 
-import { getFormattedDate } from "../../Utils/dates";
+import { getFormattedDate, getFormattedTime } from "../../Utils/dates";
 
 export const LINE_KEYS = ["Happy", "Sad", "Angry", "Neutral"];
 export const LINE_COLORS = ["#56b19c", "#15125c", "#8400b8", "#4d2000"];
@@ -61,7 +61,7 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 		svgEl
 			.style("background", "#ffff")
 			.style("overflow", "visible")
-			.attr("class", "svgBase");
+			.attr("class", "emotionGameSvgBase");
 
 		const svg = svgEl
 			.append("g")
@@ -71,11 +71,9 @@ const StatsGraph = ({ data = [], dimensions = {}, showingLines = [] }) => {
 		// Add X grid lines with labels
 		const xAxis = d3
 			.axisBottom(xScale)
-			.ticks(
-				width < 600 ? allEmotionData.length / 2 : allEmotionData.length
-			)
+			.ticks(3)
 			.tickSize(-height)
-			.tickFormat((date) => getFormattedDate(date))
+			.tickFormat((date) => getFormattedTime(date))
 			.tickPadding(10);
 		const xAxisGroup = svg
 			.append("g")
