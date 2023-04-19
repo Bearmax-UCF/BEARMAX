@@ -78,6 +78,8 @@ export default (io: Server) => {
 				socket.handshake.query.userID
 		);
 
+		socket.on("ping", () => io.emit("Pong!"));
+
 		// Forward to mobile
 		socket.on("speak", (message: string) => {
 			console.log(
@@ -153,7 +155,7 @@ export default (io: Server) => {
 		socket.on("GSR", (gsrString: string) => {
 			const data: GSRStringData = JSON.parse(gsrString);
 			console.log(data);
-			socket.emit("GSR", data.value, data.ts);
+			io.emit("GSR", data.value, data.ts);
 		});
 
 		socket.on("disconnecting", (reason) => {

@@ -37,6 +37,12 @@ export const GSRGraph = ({
 	);
 
 	const repaintIntervalRef = useRef(null);
+	const saveOptionsRef = useRef(saveOptions);
+
+	useEffect(() => {
+		saveOptionsRef.current = saveOptions;
+		console.log("Updating save options.");
+	}, [saveOptions]);
 
 	const downloadGSR = () => {
 		const element = document.createElement("a");
@@ -72,12 +78,7 @@ export const GSRGraph = ({
 				allTimesRef.current = [];
 				maxValRef.current = 0;
 
-				newSocket.onAny((eventName, ...args) => {
-					console.log(eventName);
-				});
-
 				newSocket.on("GSR", (value, ts) => {
-					console.log(value, ts);
 					dataRef.current.push({
 						value,
 						ts: new Date(ts),
@@ -102,7 +103,7 @@ export const GSRGraph = ({
 					bodyData.GSRTime.push(dataPoint.ts);
 				}
 
-				if (saveOptions.db) {
+				if (saveOptionsRef.current.db) {
 					// Save recording to database
 					fetch(buildPath("/api/gsr/"), {
 						method: "POST",
@@ -126,7 +127,7 @@ export const GSRGraph = ({
 						.catch((err) => console.error(err));
 					setRecordingStart(null);
 				}
-				if (saveOptions.file) downloadGSR();
+				if (saveOptionsRef.current.file) downloadGSR();
 
 				newSocket.close();
 				clearInterval(repaintIntervalRef.current);
