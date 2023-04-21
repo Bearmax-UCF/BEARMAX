@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import Logo from "./Images/face.png";
 import { AuthContext } from "../AuthContext";
+import { toast } from "react-toastify";
 
 function Register() {
 	const [firstName, setFirstName] = useState("");
@@ -10,7 +11,6 @@ function Register() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-	const [error, setError] = useState("");
 
 	const navigate = useNavigate();
 	const { signup } = useContext(AuthContext);
@@ -25,15 +25,21 @@ function Register() {
 			password === "" ||
 			confirmPassword === ""
 		) {
-			setError("Please make sure all fields are filled");
+			toast.error("Please make sure all fields are filled!", {
+				autoClose: 5000,
+			});
 			return;
 		} else if (password !== confirmPassword) {
-			setError("Passwords don't match!");
+			toast.error("Passwords don't match!");
 			return;
 		} else {
-			const res = await signup(email, firstName, lastName, password);
-			setError(res);
-			if (!res) navigate("/dashboard");
+			const errorMsg = await signup(email, firstName, lastName, password);
+			if (!errorMsg) {
+				toast.success("Success! Please log in.");
+				navigate("/login");
+			} else {
+				toast.error(errorMsg);
+			}
 		}
 	};
 
@@ -89,7 +95,6 @@ function Register() {
 					onClick={registerUser}
 				/>
 				<br />
-				<p className="errorText">{error}</p>
 			</form>
 			<button className="regToLog" onClick={() => navigate("/login")}>
 				<u>Already have an account? Login!</u>

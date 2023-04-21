@@ -88,10 +88,7 @@ export const AuthProvider = ({ children }) => {
 					password,
 				}),
 			});
-			const data = await res.json();
-
-			if (res.status === 201) return await loginFunction(email, password);
-			else if (data.message) return data.message;
+			if (res.status === 201) return "";
 		} catch (err) {
 			console.error(err);
 		}
@@ -122,15 +119,15 @@ export const AuthProvider = ({ children }) => {
 		return "Logout failed!";
 	};
 
-	const getUserData = async () => {
-		if (!user) return null;
+	const getUserData = async (token) => {
+		if (!token && !user) return null;
 		try {
 			const res = await fetch(buildPath("/api/users/me"), {
 				method: "GET",
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",
-					Authorization: "Bearer " + user.token,
+					Authorization: "Bearer " + (token ?? user.token),
 				},
 			});
 
@@ -145,9 +142,23 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	useEffect(() => {
-		const userData = getUser();
-		setUser(userData);
-		if (userData) navigate("/dashboard");
+		async function testToken() {
+			// Get from store
+			const userData = getUser();
+			if (userData) {
+				// Check if token has not expired
+				const tokenIsValid =
+					(await getUserData(userData.token)) !== null;
+				if (tokenIsValid) {
+					setUser(userData);
+					navigate("/dashboard");
+				} else {
+					clearUser();
+				}
+			}
+		}
+		testToken();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

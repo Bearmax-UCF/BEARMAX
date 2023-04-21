@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 import Logo from "./Images/face.png";
 import { AuthContext } from "../AuthContext";
+import { toast } from "react-toastify";
 
 function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [error, setError] = useState("");
 
 	const navigate = useNavigate();
 	const { login } = useContext(AuthContext);
@@ -16,13 +16,13 @@ function Login() {
 		event.preventDefault();
 
 		if (!email || !password) {
-			setError("Invalid login.");
+			toast.error("Invalid login.");
 			return;
 		}
 
-		const res = await login(email, password);
-		setError(res);
-		if (res === "") navigate("/dashboard");
+		const errorMsg = await login(email, password);
+		if (!errorMsg) navigate("/dashboard");
+		else toast.error("Invalid login.");
 	};
 
 	return (
@@ -46,7 +46,6 @@ function Login() {
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 				/>
-				<p className="errorText">{error}</p>
 				<button type="submit" className="loginButton" onClick={doLogin}>
 					Login
 				</button>

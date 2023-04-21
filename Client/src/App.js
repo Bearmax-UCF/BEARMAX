@@ -1,6 +1,9 @@
 import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import "./App.css";
 import "./Components/NavBar/Nav.css";
 import "./Pages/Landing/Landing.css";
@@ -35,6 +38,11 @@ const Protected = ({ children }) => {
 function App() {
 	return (
 		<div className="App">
+			<ToastContainer
+				position="bottom-center"
+				autoClose="4000"
+				theme="dark"
+			/>
 			<NavBar />
 			<Routes>
 				<Route path="/" element={<LandingPage />} />

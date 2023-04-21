@@ -18,7 +18,7 @@ router.post("/", requireJwtAuth, async (req, res, next) => {
 		});
 
 		data.save();
-		res.status(200).send();
+		res.status(200).send({ id: data._id });
 	} catch (err) {
 		next(err);
 	}

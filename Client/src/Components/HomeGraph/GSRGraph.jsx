@@ -4,19 +4,13 @@ import useWindowDimensions from "../WindowDimensions";
 import { buildPath } from "../BuildPath";
 import { io } from "socket.io-client";
 import { AuthContext } from "../../AuthContext";
-import { getFileName, getFormattedTime } from "../../Utils/dates";
+import { getFormattedTime } from "../../Utils/dates";
 
-export const GSRGraph = ({
-	recording,
-	recordingStart,
-	setRecordingStart,
-	saveOptions,
-}) => {
+export const GSRGraph = ({ recording, recordingPointRefs, dataRef }) => {
 	const { windowHeight, windowWidth } = useWindowDimensions();
 	const { user } = useContext(AuthContext);
 
 	const svgRef = useRef();
-	const dataRef = useRef([]); //{value: number, ts: Date}
 	const allTimesRef = useRef([]); // [Date]
 	const maxValRef = useRef(0);
 	const lastMouseCoordsRef = useRef(null);
@@ -38,30 +32,6 @@ export const GSRGraph = ({
 		}),
 		[windowHeight, windowWidth]
 	);
-
-	// Keep save options up to date so when socket callback fires, we can have whatever is currently selected
-	const saveOptionsRef = useRef(saveOptions);
-
-	useEffect(() => {
-		saveOptionsRef.current = saveOptions;
-	}, [saveOptions]);
-
-	// Save recorded data to a file
-	const downloadGSR = () => {
-		const element = document.createElement("a");
-		let content = dataRef.current.reduce((prev, curr) => {
-			return prev + `${curr.ts},${curr.value}\n`;
-		}, "timestamp,value,\n");
-
-		const file = new Blob([content], {
-			type: "text/plain",
-		});
-		element.href = URL.createObjectURL(file);
-		element.download = "gsr_" + getFileName(new Date()) + ".csv";
-		document.body.appendChild(element); // Required for this to work in FireFox
-		element.click();
-		element.remove();
-	};
 
 	useEffect(() => {
 		// If we're NOW recording, start listening for GSR data
@@ -100,41 +70,6 @@ export const GSRGraph = ({
 			const redrawInt = setInterval(redraw, 100);
 
 			return () => {
-				// Cleanup socket and save data
-				if (saveOptionsRef.current.db) {
-					const data = dataRef.current;
-					const bodyData = { GSRData: [], GSRTime: [] };
-					for (let dataPoint of data) {
-						bodyData.GSRData.push(dataPoint.value);
-						bodyData.GSRTime.push(dataPoint.ts);
-					}
-
-					// Save recording to database
-					fetch(buildPath("/api/gsr/"), {
-						method: "POST",
-						headers: {
-							Accept: "application/json",
-							"Content-Type": "application/json",
-							Authorization: "Bearer " + user.token,
-						},
-						body: JSON.stringify(bodyData),
-					})
-						.then((res) => {
-							if (res.status === 200)
-								console.log(
-									"Saved recording to database successfully!"
-								);
-							else
-								console.error(
-									"Could not save recording to database."
-								);
-						})
-						.catch((err) => console.error(err));
-					setRecordingStart(null);
-				}
-
-				if (saveOptionsRef.current.file) downloadGSR();
-
 				newSocket.close();
 				clearInterval(redrawInt);
 			};
@@ -152,7 +87,7 @@ export const GSRGraph = ({
 		const xScale = d3
 			.scaleTime()
 			.nice()
-			.domain([recordingStart, new Date()])
+			.domain([recordingPointRefs.current.start, recordingPointRefs.current.end ?? new Date()])
 			.range([0, width]);
 
 		const yScale = d3
