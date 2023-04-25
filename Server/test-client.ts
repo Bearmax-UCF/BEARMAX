@@ -4,20 +4,22 @@ console.log("Attempting to connect");
 
 /*
 carewithbearmax.com
-const TOKEN =
-	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDM3MDc1ZmY2MjQ4MjgzMDJlZTMwNjciLCJqdGkiOiI0YWY0ZDk0ZS01YWVkLTRkMzItYTQyNy1jYTU1ZjIwZTNmOTkiLCJpYXQiOjE2ODE5MjY2OTksImV4cCI6MTY4MTk2OTg5OX0.bjL-tptKMTK8i8ag7nxVz2NWpgDf3knQOuYqbK21Jc8";
-const USERID = "6437075ff624828302ee3067";
 */
+const TOKEN =
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDQxZWYyZGVmZTBmYjhhYWNhMWY5NWIiLCJqdGkiOiI4NTM2MjYwMi03YWEwLTQwNjEtODJmMC0xYzg1MzA2YTIyMDgiLCJpYXQiOjE2ODIwODY1ODgsImV4cCI6MTY4MjEyOTc4OH0.rRBmZRzSWSOVXdt91XMEk_xv6y1XkKOu_7JWV6AZRdM";
+const USERID = "6441ef2defe0fb8aaca1f95b";
+const URL = "https://carewithbearmax.com";
 
 /*
 dev
-*/
+
 const TOKEN =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDM3MzUzNGUzZDBiZDBlMDIwMDY3N2IiLCJqdGkiOiJlMTgwNWY3MS1jNjM3LTQ3NzUtYmM5Zi0xZTdhM2IxNWEwNWIiLCJpYXQiOjE2ODE5Mjg1NTMsImV4cCI6MTY4MTk3MTc1M30.T7HaQtybROln8mYtghY0FIruxMw0mIJ-G99OAGD-p3g";
 const USERID = "64373534e3d0bd0e0200677b";
+*/
 
 // @ts-ignore
-const socket = io("http://localhost:8080", {
+const socket = io(URL, {
 	query: {
 		userID: USERID,
 	},
