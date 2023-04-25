@@ -54,12 +54,13 @@ export const GSRGraph = ({ recording, recordingPointRefs, dataRef }) => {
 				maxValRef.current = 0;
 
 				newSocket.on("GSR", (value, ts) => {
+					const tsMilli = ts / 1000000;
 					dataRef.current.push({
 						value,
-						ts: new Date(ts),
+						ts: new Date(tsMilli),
 					});
 					if (value > maxValRef.current) maxValRef.current = value;
-					allTimesRef.current.push(new Date(ts));
+					allTimesRef.current.push(new Date(tsMilli));
 				});
 			});
 
@@ -87,7 +88,10 @@ export const GSRGraph = ({ recording, recordingPointRefs, dataRef }) => {
 		const xScale = d3
 			.scaleTime()
 			.nice()
-			.domain([recordingPointRefs.current.start, recordingPointRefs.current.end ?? new Date()])
+			.domain([
+				recordingPointRefs.current.start,
+				recordingPointRefs.current.end ?? new Date(),
+			])
 			.range([0, width]);
 
 		const yScale = d3
