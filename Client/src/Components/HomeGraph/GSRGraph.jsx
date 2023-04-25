@@ -79,10 +79,7 @@ export const GSRGraph = ({
 				maxValRef.current = 0;
 
 				newSocket.on("GSR", (value, ts) => {
-					console.log("Nano: ", ts);
-					console.log("Milli:", ts / 1000000);
-					console.log("Date:", new Date(ts / 1000000));
-					console.log(value, ts, new Date(ts));
+					console.log(value, ts, new Date(ts / 1000000));
 					dataRef.current.push({
 						value,
 						ts: new Date(ts),
